@@ -1,6 +1,5 @@
 package hu.cubix.hr;
 
-import com.sun.tools.javac.Main;
 import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.service.SalaryService;
 import org.springframework.beans.factory.annotation.Autowired;

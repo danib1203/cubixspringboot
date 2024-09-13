@@ -1,0 +1,13 @@
+hr:
+  employee:
+    smart:
+      topLimit: 10
+      middleLimit: 9
+      lowerLimit: 8
+      percentageForTop: 15
+      percentageForMiddle: 14
+      percentageForLower: 11
+      percentageForRest: 8
+spring:
+  profiles:
+    active: smart

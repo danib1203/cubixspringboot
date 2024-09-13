@@ -1,23 +1,25 @@
 package hu.cubix.hr.service;
 
-import ch.qos.logback.core.util.Duration;
+import hu.cubix.hr.config.EmployeeConfigurationProperties;
+import hu.cubix.hr.config.EmployeeConfigurationProperties.Employee.Smart;
 import hu.cubix.hr.model.Employee;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-@Service
-@Primary
 public class SmartEmployeeService implements EmployeeService {
+    @Autowired
+    private EmployeeConfigurationProperties config;
+
     @Override
     public int getPayRaisePercent(Employee employee) {
+        Smart smartConfig = config.getEmployee().getSmart();
         long yearsOfWork = ChronoUnit.YEARS.between(employee.getWorkingSince(), LocalDateTime.now());
-        System.out.print("Years of working for " + employee.getJob() + ": " + yearsOfWork);
-        if (yearsOfWork >= 10) return 10;
-        else if (yearsOfWork >= 5) return 5;
-        else if (yearsOfWork >= 2.5) return 2;
-        else return 0;
+        System.out.println("Years of working for " + employee.getJob() + ": " + yearsOfWork);
+        if (yearsOfWork >= smartConfig.getTopLimit()) return smartConfig.getPercentageForTop();
+        else if (yearsOfWork >= smartConfig.getMiddleLimit()) return smartConfig.getPercentageForMiddle();
+        else if (yearsOfWork >= smartConfig.getLowerLimit()) return smartConfig.getPercentageForLower();
+        else return smartConfig.getPercentageForRest();
     }
 }
