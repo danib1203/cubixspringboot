@@ -5,11 +5,8 @@ import hu.cubix.hr.config.EmployeeConfigurationProperties.Employee.Smart;
 import hu.cubix.hr.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 
 public class SmartEmployeeService implements EmployeeService {
     @Autowired
