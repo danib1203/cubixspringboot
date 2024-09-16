@@ -29,73 +29,70 @@ public class EmployeeConfigurationProperties {
         }
 
         public static class Smart {
-            private int topLimit;
-            private int middleLimit;
-            private int lowerLimit;
+            private double topLimit;
+            private double middleLimit;
+            private double lowerLimit;
 
-            private int percentageForTop;
-            private int percentageForMiddle;
-            private int percentageForLower;
-            private int percentageForRest;
+            private double percentageForTop;
+            private double percentageForMiddle;
+            private double percentageForLower;
+            private double percentageForRest;
 
-            public int getPercentageForTop() {
-                return percentageForTop;
-            }
-
-            public void setPercentageForTop(int percentageForTop) {
-                this.percentageForTop = percentageForTop;
-            }
-
-            public int getPercentageForMiddle() {
-                return percentageForMiddle;
-            }
-
-            public void setPercentageForMiddle(int percentageForMiddle) {
-                this.percentageForMiddle = percentageForMiddle;
-            }
-
-            public int getPercentageForLower() {
-                return percentageForLower;
-            }
-
-            public void setPercentageForLower(int percentageForLower) {
-                this.percentageForLower = percentageForLower;
-            }
-
-            public int getPercentageForRest() {
-                return percentageForRest;
-            }
-
-            public void setPercentageForRest(int percentageForRest) {
-                this.percentageForRest = percentageForRest;
-            }
-
-
-            public int getTopLimit() {
+            public double getTopLimit() {
                 return topLimit;
             }
 
-            public void setTopLimit(int topLimit) {
+            public void setTopLimit(double topLimit) {
                 this.topLimit = topLimit;
             }
 
-            public int getMiddleLimit() {
+            public double getMiddleLimit() {
                 return middleLimit;
             }
 
-            public void setMiddleLimit(int middleLimit) {
+            public void setMiddleLimit(double middleLimit) {
                 this.middleLimit = middleLimit;
             }
 
-            public int getLowerLimit() {
+            public double getLowerLimit() {
                 return lowerLimit;
             }
 
-            public void setLowerLimit(int lowerLimit) {
+            public void setLowerLimit(double lowerLimit) {
                 this.lowerLimit = lowerLimit;
             }
 
+            public double getPercentageForTop() {
+                return percentageForTop;
+            }
 
+            public void setPercentageForTop(double percentageForTop) {
+                this.percentageForTop = percentageForTop;
+            }
+
+            public double getPercentageForMiddle() {
+                return percentageForMiddle;
+            }
+
+            public void setPercentageForMiddle(double percentageForMiddle) {
+                this.percentageForMiddle = percentageForMiddle;
+            }
+
+            public double getPercentageForLower() {
+                return percentageForLower;
+            }
+
+            public void setPercentageForLower(double percentageForLower) {
+                this.percentageForLower = percentageForLower;
+            }
+
+            public double getPercentageForRest() {
+                return percentageForRest;
+            }
+
+            public void setPercentageForRest(double percentageForRest) {
+                this.percentageForRest = percentageForRest;
+            }
         }
     }
 }

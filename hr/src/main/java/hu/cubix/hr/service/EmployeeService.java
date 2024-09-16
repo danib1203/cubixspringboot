@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface EmployeeService {
-    int getPayRaisePercent(Employee employee);
+    double getPayRaisePercent(Employee employee);
 }

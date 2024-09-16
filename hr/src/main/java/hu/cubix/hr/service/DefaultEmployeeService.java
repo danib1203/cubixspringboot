@@ -5,7 +5,7 @@ import hu.cubix.hr.model.Employee;
 public class DefaultEmployeeService implements EmployeeService {
 
     @Override
-    public int getPayRaisePercent(Employee employee) {
+    public double getPayRaisePercent(Employee employee) {
         return 5;
     }
 }
