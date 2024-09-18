@@ -11,3 +11,6 @@ hr:
 spring:
   profiles:
     active: smart
+  thymeleaf:
+    cache: false
+

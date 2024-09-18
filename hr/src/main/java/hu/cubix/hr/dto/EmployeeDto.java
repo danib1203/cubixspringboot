@@ -1,27 +1,20 @@
-package hu.cubix.hr.model;
+package hu.cubix.hr.dto;
 
 import java.time.LocalDate;
-public class Employee {
+
+public class EmployeeDto {
     private long id;
     private String job;
     private int salary;
     private LocalDate workingSince;
 
-    public Employee(long id, String job, int salary, LocalDate workingSince) {
+    public EmployeeDto() {
+    }
+
+    public EmployeeDto(long id, String job, int salary, LocalDate workingSince) {
         this.id = id;
         this.job = job;
         this.salary = salary;
-        this.workingSince = workingSince;
-    }
-
-    public Employee() {
-    }
-
-    public LocalDate getWorkingSince() {
-        return workingSince;
-    }
-
-    public void setWorkingSince(LocalDate workingSince) {
         this.workingSince = workingSince;
     }
 
@@ -49,5 +42,11 @@ public class Employee {
         this.salary = salary;
     }
 
+    public LocalDate getWorkingSince() {
+        return workingSince;
+    }
 
+    public void setWorkingSince(LocalDate workingSince) {
+        this.workingSince = workingSince;
+    }
 }
