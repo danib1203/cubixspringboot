@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -16,7 +17,8 @@ public class EmployeeController {
     private final HashMap<Long, EmployeeDto> employees = new HashMap<>();
 
     {
-        employees.put(1L, new EmployeeDto(1, "Boss", 310000, LocalDate.of(2014, 1, 23)));
+        employees.put(1L, new EmployeeDto(1, "Boss", 310000,
+                LocalDate.of(2014, 1, 23)));
     }
 
     @GetMapping
@@ -42,7 +44,8 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable long id, @RequestBody EmployeeDto employee) {
+    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable long id,
+                                                      @RequestBody EmployeeDto employee) {
         employee.setId(id);
         if (!employees.containsKey(id)) {
             return ResponseEntity.notFound().build();
@@ -58,15 +61,9 @@ public class EmployeeController {
 
     @GetMapping("/salaryHigher")
     public ResponseEntity<List<EmployeeDto>> getEmployeesWithSalaryHigherThanParam(@RequestParam long salary) {
-        List<EmployeeDto> employeesWithSalaryHigherThan = new ArrayList<>();
-        for (EmployeeDto employee : employees.values()) {
-            if (employee.getSalary() > salary) {
-                employeesWithSalaryHigherThan.add(employee);
-            }
-        }
-        if (employeesWithSalaryHigherThan.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        List<EmployeeDto> employeesWithSalaryHigherThan =
+                employees.values().stream().filter(employee -> employee.getSalary() > salary).collect(Collectors.toList());
+
         return ResponseEntity.ok(employeesWithSalaryHigherThan);
     }
 }
