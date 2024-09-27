@@ -8,6 +8,12 @@ hr:
       percentageForMiddle: 14
       percentageForLower: 11
       percentageForRest: 8
+      limits:
+        1: 1
+        2.5: 5
+        11: 70
+        4: 6
+        10: 33
 spring:
   profiles:
     active: smart

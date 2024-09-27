@@ -24,7 +24,7 @@ public class HrApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         Employee employee1 = new Employee(213213, "Tester", 100000, LocalDate.of(2014, 9, 21));
-        Employee employee2 = new Employee(32432, "Dev", 100000, LocalDate.of(2014, 9, 11));
+        Employee employee2 = new Employee(32432, "Dev", 100000, LocalDate.of(2013, 9, 11));
 
         salaryService.givePayRaise(employee1);
         salaryService.givePayRaise(employee2);

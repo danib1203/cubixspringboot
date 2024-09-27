@@ -3,6 +3,9 @@ package hu.cubix.hr.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 @ConfigurationProperties(prefix = "hr")
 @Component
 public class EmployeeConfigurationProperties {
@@ -37,6 +40,15 @@ public class EmployeeConfigurationProperties {
             private double percentageForMiddle;
             private double percentageForLower;
             private double percentageForRest;
+            private TreeMap<Double, Integer> limits;
+
+            public TreeMap<Double, Integer> getLimits() {
+                return limits;
+            }
+
+            public void setLimits(TreeMap<Double, Integer> limits) {
+                this.limits = limits;
+            }
 
             public double getTopLimit() {
                 return topLimit;

@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class SmartEmployeeService implements EmployeeService {
     @Autowired
@@ -22,13 +26,20 @@ public class SmartEmployeeService implements EmployeeService {
         double monthsInYears = months / 12.0;
         int daysInMonth = LocalDate.now().lengthOfMonth();
         double daysInYears = days / (double) daysInMonth / 12.0;
-
         double yearsOfWork = years + monthsInYears + daysInYears;
-        System.out.print("Years of working for " + employee.getJob() + ": ");
-        System.out.printf("%.2f \n", yearsOfWork);
-        if (yearsOfWork >= smartConfig.getTopLimit()) return smartConfig.getPercentageForTop();
-        else if (yearsOfWork >= smartConfig.getMiddleLimit()) return smartConfig.getPercentageForMiddle();
-        else if (yearsOfWork >= smartConfig.getLowerLimit()) return smartConfig.getPercentageForLower();
-        else return smartConfig.getPercentageForRest();
+        TreeMap<Double, Integer> limits = smartConfig.getLimits();
+        Set<Double> yearLimits = limits.keySet();
+        int maxValue = 0;
+
+        for (double year : yearLimits) {
+            if (year <= yearsOfWork) {
+                maxValue = limits.get(year);
+                System.out.println("current max value: "+maxValue);
+            }
+        }
+        System.out.println("Given pay raise percent is: "+maxValue);
+        return maxValue;
     }
+
+
 }
