@@ -13,4 +13,8 @@ spring:
     active: smart
   thymeleaf:
     cache: false
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 

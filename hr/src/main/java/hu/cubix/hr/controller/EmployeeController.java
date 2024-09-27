@@ -1,7 +1,13 @@
 package hu.cubix.hr.controller;
 
 import hu.cubix.hr.dto.EmployeeDto;
+import hu.cubix.hr.model.Employee;
+import hu.cubix.hr.service.EmployeeService;
+import hu.cubix.hr.service.SalaryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -14,6 +20,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
+    @Autowired
+    EmployeeService employeeService;
     private final HashMap<Long, EmployeeDto> employees = new HashMap<>();
 
     {
@@ -65,6 +73,11 @@ public class EmployeeController {
                 employees.values().stream().filter(employee -> employee.getSalary() > salary).collect(Collectors.toList());
 
         return ResponseEntity.ok(employeesWithSalaryHigherThan);
+    }
+
+    @GetMapping("/getPayRaise")
+    public double getEmployeePayRaisePercent(@RequestBody Employee employee) {
+        return employeeService.getPayRaisePercent(employee);
     }
 }
 

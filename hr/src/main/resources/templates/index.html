@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Employees</title>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+
 </head>
 <body>
 <h3>Welcome to HR application!</h3>
@@ -13,16 +15,24 @@
         <th>Salary</th>
         <th>Working since</th>
     </tr>
+
     <tr th:each="employee : ${employees}">
         <td th:text="${employee.id}"></td>
-        <td th:text="${employee.job}"></td>
+        <td><a th:href="@{/{id}(id = ${employee.id})}"
+               th:text="${employee.job}"></a></td>
         <td th:text="${employee.salary}"></td>
         <td th:text="${employee.workingSince}"></td>
+        <td>
+            <form th:action="@{/delete/{id}(id=${employee.id})}"
+                  th:object="${employee}"
+                  th:method="delete">
+                <input type="submit" value="Delete">
+            </form>
+        </td>
     </tr>
 </table>
 <br>
 <form th:object="${newEmployee}" method="post" th:action="@{/employee}">
-    Id: <input th:field="*{id}"><br>
     Job: <input th:field="*{job}"><br>
     Salary: <input th:field="*{salary}"><br>
     Working since: <input th:field="*{workingSince}"><br>

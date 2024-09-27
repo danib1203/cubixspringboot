@@ -14,6 +14,16 @@ public class Employee {
         this.workingSince = workingSince;
     }
 
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", job='" + job + '\'' +
+                ", salary=" + salary +
+                ", workingSince=" + workingSince +
+                '}';
+    }
+
     public Employee() {
     }
 

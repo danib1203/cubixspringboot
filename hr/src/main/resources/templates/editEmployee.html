@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="Edit+ ':' + ' '+ ${employee.job}">Title</title>
+</head>
+<body>
+<span th:text="Edit+ ':' + ' '+ ${employee.job}"></span>
+
+<form th:method="put" th:object = "${employee}"
+      th:action="@{/saveEmployee/{id}(id = ${employee.id})}">
+    <input type="text" th:field="*{job}" placeholder="Job">
+    <input type="number" th:field="*{salary}" placeholder="Salary">
+    <input type="text" th:field="*{workingSince}" placeholder="Working Since">
+    <input type="submit" value="Save employee">
+</form>
+</body>
+</html>
