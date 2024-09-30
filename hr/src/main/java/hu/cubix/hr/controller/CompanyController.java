@@ -26,7 +26,7 @@ public class CompanyController {
 
     @GetMapping()
     public List<CompanyDto> getCompanies(@RequestParam Optional<Boolean> full) {
-        if (full.isEmpty() || full.get().equals(Boolean.FALSE)) {
+        if (!full.orElse(false)) {
             new ArrayList<>(companies.values());
             return companies.values().stream()
                     .map(dto -> new CompanyDto(dto.getId(), dto.getRegistrationNumber(),
@@ -39,11 +39,17 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyDto> getCompanyById(@PathVariable final long id) {
+    public ResponseEntity<CompanyDto> getCompanyById(@PathVariable final long id,
+                                                     @RequestParam Optional<Boolean> full) {
         if (!companies.containsKey(id)) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(companies.get(id));
+        CompanyDto companyDto = companies.get(id);
+        if (!full.orElse(false)) {
+            return ResponseEntity.ok(new CompanyDto(companyDto.getId(),
+                    companyDto.getRegistrationNumber(),
+                    companyDto.getName(), companyDto.getAddress()));
+        } else return ResponseEntity.ok(companyDto);
     }
 
     @PostMapping
@@ -75,6 +81,9 @@ public class CompanyController {
     @PostMapping("/addEmployee")
     public ResponseEntity<CompanyDto> addEmployeeToCompany(@RequestBody EmployeeDto employeeDto,
                                                            @RequestParam final Long companyId) {
+        if (!companies.containsKey(companyId)) {
+            return ResponseEntity.notFound().build();
+        }
         companies.get(companyId).getEmployees().add(employeeDto);
         return ResponseEntity.ok(companies.get(companyId));
     }

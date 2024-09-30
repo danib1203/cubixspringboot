@@ -75,7 +75,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeesWithSalaryHigherThan);
     }
 
-    @GetMapping("/getPayRaise")
+    @PostMapping("/getPayRaise")
     public double getEmployeePayRaisePercent(@RequestBody Employee employee) {
         return employeeService.getPayRaisePercent(employee);
     }
