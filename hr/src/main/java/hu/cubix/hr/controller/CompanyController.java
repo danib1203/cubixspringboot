@@ -27,13 +27,9 @@ public class CompanyController {
     @GetMapping()
     public List<CompanyDto> getCompanies(@RequestParam Optional<Boolean> full) {
         if (!full.orElse(false)) {
-            new ArrayList<>(companies.values());
-            return companies.values().stream()
-                    .map(dto -> new CompanyDto(dto.getId(), dto.getRegistrationNumber(),
-                            dto.getName(),
-                            dto.getAddress()))
-                    .collect(Collectors.toList());
-
+            return companies.values().stream().map(dto -> new CompanyDto(dto.getId(),
+                    dto.getRegistrationNumber(), dto.getName(),
+                    dto.getAddress())).collect(Collectors.toList());
         } else return new ArrayList<>(companies.values());
 
     }
@@ -47,8 +43,8 @@ public class CompanyController {
         CompanyDto companyDto = companies.get(id);
         if (!full.orElse(false)) {
             return ResponseEntity.ok(new CompanyDto(companyDto.getId(),
-                    companyDto.getRegistrationNumber(),
-                    companyDto.getName(), companyDto.getAddress()));
+                    companyDto.getRegistrationNumber(), companyDto.getName(),
+                    companyDto.getAddress()));
         } else return ResponseEntity.ok(companyDto);
     }
 
@@ -89,8 +85,7 @@ public class CompanyController {
     }
 
     @DeleteMapping("/deleteEmployee")
-    public ResponseEntity<CompanyDto> deleteEmployeeFromCompany(@RequestParam final Long employeeId,
-                                                                @RequestParam final Long companyId) {
+    public ResponseEntity<CompanyDto> deleteEmployeeFromCompany(@RequestParam final Long employeeId, @RequestParam final Long companyId) {
         if (!companies.containsKey(companyId)) {
             return ResponseEntity.notFound().build();
         }
