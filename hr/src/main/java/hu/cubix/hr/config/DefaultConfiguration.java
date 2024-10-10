@@ -1,7 +1,7 @@
 package hu.cubix.hr.config;
 
-import hu.cubix.hr.service.DefaultEmployeeService;
-import hu.cubix.hr.service.EmployeeService;
+import hu.cubix.hr.service.DefaultEmployeePayRaiseService;
+import hu.cubix.hr.service.EmployeePayRaiseService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 public class DefaultConfiguration {
 
     @Bean
-    public EmployeeService employeeService() {
-        return new DefaultEmployeeService();
+    public EmployeePayRaiseService employeeService() {
+        return new DefaultEmployeePayRaiseService();
     }
 }

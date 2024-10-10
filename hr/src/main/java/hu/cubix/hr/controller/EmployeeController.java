@@ -1,14 +1,15 @@
 package hu.cubix.hr.controller;
 
 import hu.cubix.hr.dto.EmployeeDto;
+import hu.cubix.hr.mapper.EmployeeMapper;
 import hu.cubix.hr.model.Employee;
+import hu.cubix.hr.service.EmployeePayRaiseService;
 import hu.cubix.hr.service.EmployeeService;
-import hu.cubix.hr.service.SalaryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,63 +22,67 @@ import java.util.stream.Collectors;
 public class EmployeeController {
 
     @Autowired
+    EmployeePayRaiseService employeePayRaiseService;
+    @Autowired
     EmployeeService employeeService;
-    private final HashMap<Long, EmployeeDto> employees = new HashMap<>();
+    @Autowired
+    EmployeeMapper employeeMapper;
 
-    {
-        employees.put(1L, new EmployeeDto(1, "Boss", 310000,
-                LocalDate.of(2014, 1, 23)));
-    }
 
     @GetMapping
-    public List<EmployeeDto> getAllEmployees() {
-        return new ArrayList<>(employees.values());
+    public List<EmployeeDto> findAll() {
+        return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable long id) {
-        if (!employees.containsKey(id)) {
-            return ResponseEntity.notFound().build();
+    public EmployeeDto getEmployeeById(@PathVariable long id) {
+        Employee employee = employeeService.findById(id);
+        if (employee == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found");
         }
-        return ResponseEntity.ok(employees.get(id));
+        return employeeMapper.employeeToDto(employee);
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employee) {
-        if (employees.containsKey(employee.getId())) {
-            return ResponseEntity.badRequest().build();
+    public EmployeeDto createEmployee(@RequestBody EmployeeDto employeeDto) {
+        Employee employee = employeeMapper.dtoToEmployee(employeeDto);
+        Employee createdEmployee = employeeService.create(employee);
+        if (createdEmployee == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        employees.put(employee.getId(), employee);
-        return ResponseEntity.ok(employee);
+        return employeeMapper.employeeToDto(createdEmployee);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable long id,
-                                                      @RequestBody EmployeeDto employee) {
+    public EmployeeDto updateEmployee(@PathVariable long id,
+                                      @RequestBody EmployeeDto employeeDto) {
+        Employee employee = employeeMapper.dtoToEmployee(employeeDto);
         employee.setId(id);
-        if (!employees.containsKey(id)) {
-            return ResponseEntity.notFound().build();
+        Employee createdEmployee = employeeService.update(employee);
+        if (createdEmployee == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found");
         }
-        employees.put(id, employee);
-        return ResponseEntity.ok(employee);
+        return employeeMapper.employeeToDto(createdEmployee);
     }
 
     @DeleteMapping("/{id}")
     public void deleteEmployee(@PathVariable long id) {
-        employees.remove(id);
+        employeeService.delete(id);
     }
 
     @GetMapping("/salaryHigher")
-    public ResponseEntity<List<EmployeeDto>> getEmployeesWithSalaryHigherThanParam(@RequestParam long salary) {
+    public List<EmployeeDto> getEmployeesWithSalaryHigherThanParam(@RequestParam long salary) {
+        List<Employee> employees = employeeService.findAll();
+        List<EmployeeDto> employeesDto = employeeMapper.employeesToDtos(employees);
         List<EmployeeDto> employeesWithSalaryHigherThan =
-                employees.values().stream().filter(employee -> employee.getSalary() > salary).collect(Collectors.toList());
+                employeesDto.stream().filter(employee -> employee.salary() > salary).collect(Collectors.toList());
 
-        return ResponseEntity.ok(employeesWithSalaryHigherThan);
+        return employeesWithSalaryHigherThan;
     }
 
     @PostMapping("/getPayRaise")
     public double getEmployeePayRaisePercent(@RequestBody Employee employee) {
-        return employeeService.getPayRaisePercent(employee);
+        return employeePayRaiseService.getPayRaisePercent(employee);
     }
 }
 

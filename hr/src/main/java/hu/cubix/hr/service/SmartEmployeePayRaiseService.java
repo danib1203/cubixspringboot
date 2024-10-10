@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
-public class SmartEmployeeService implements EmployeeService {
+public class SmartEmployeePayRaiseService extends EmployeeService {
     @Autowired
     private EmployeeConfigurationProperties config;
 

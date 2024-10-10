@@ -8,16 +8,16 @@ import org.springframework.stereotype.Service;
 public class SalaryService {
 
 
-    EmployeeService employeeService;
+    EmployeePayRaiseService employeePayRaiseService;
 
 
-    public SalaryService(EmployeeService employeeService) {
-        this.employeeService = employeeService;
+    public SalaryService(EmployeePayRaiseService employeePayRaiseService) {
+        this.employeePayRaiseService = employeePayRaiseService;
     }
 
 
     public void givePayRaise(Employee employee) {
-        double modifiedSalary = ((((double) employeeService.getPayRaisePercent(employee) / 100) + 1.0) * employee.getSalary());
+        double modifiedSalary = ((((double) employeePayRaiseService.getPayRaisePercent(employee) / 100) + 1.0) * employee.getSalary());
         employee.setSalary((int) modifiedSalary);
         System.out.println("Updated salary: " + employee.getSalary());
     }
