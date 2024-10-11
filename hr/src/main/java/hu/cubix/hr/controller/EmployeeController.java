@@ -5,6 +5,7 @@ import hu.cubix.hr.mapper.EmployeeMapper;
 import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.service.EmployeePayRaiseService;
 import hu.cubix.hr.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public EmployeeDto createEmployee(@RequestBody EmployeeDto employeeDto) {
+    public EmployeeDto createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
         Employee employee = employeeMapper.dtoToEmployee(employeeDto);
         Employee createdEmployee = employeeService.create(employee);
         if (createdEmployee == null) {
