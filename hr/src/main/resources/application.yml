@@ -16,7 +16,7 @@ hr:
         10: 33
 spring:
   profiles:
-    active: smart
+    active: smarta
   thymeleaf:
     cache: false
   mvc:

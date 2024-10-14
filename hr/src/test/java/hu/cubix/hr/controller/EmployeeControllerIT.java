@@ -1,6 +1,7 @@
 package hu.cubix.hr.controller;
 
 import hu.cubix.hr.dto.EmployeeDto;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,8 @@ public class EmployeeControllerIT {
 
     @Autowired
     WebTestClient webTestClient;
+
+    //Test for POST methods
 
     @Test
     void testThatEmployeeIsCreatedWithValidInput() {
@@ -54,9 +57,46 @@ public class EmployeeControllerIT {
                 .containsExactlyElementsOf(employeesBefore);
     }
 
+    //Test for PUT methods
 
-    private void createEmployee(EmployeeDto newEmployee) {
-        webTestClient.post().uri("/api/employees").bodyValue(newEmployee).exchange().expectStatus().isOk();
+    @Test
+    void testThatEmployeeIsUpdatedWithValidInput() {
+        EmployeeDto employeeDto = new EmployeeDto(1, "Jozsi", "Dev", 100000,
+                LocalDate.of(2024, 1, 1));
+        createEmployee(employeeDto);
+        List<EmployeeDto> employeesBefore = getAllEmployees();
+        EmployeeDto updatedEmployee = new EmployeeDto(1, "Jozsi", "Tester", 200000,
+                LocalDate.of(2014, 1, 1));
+
+        updateEmployee(updatedEmployee, updatedEmployee.id());
+        List<EmployeeDto> employeesAfter = getAllEmployees();
+
+        assertThat(employeesAfter.size()).isEqualTo(employeesBefore.size());
+        assertThat(employeesBefore.get(0).id()).isEqualTo(employeesAfter.get(0).id());
+        assertThat(employeesBefore.get(0).job()).isNotEqualTo(employeesAfter.get(0).job());
+    }
+
+    @Test
+    void testThatEmployeeIsNotUpdatedWithInvalidInput() {
+        EmployeeDto employeeDto = new EmployeeDto(1, "Jozsi", "Dev", 100000,
+                LocalDate.of(2024, 1, 1));
+        createEmployee(employeeDto);
+        List<EmployeeDto> employeesBefore = getAllEmployees();
+        EmployeeDto invalidUpdatedEmployee = new EmployeeDto(22, "Jozsi", "Team lead", 250000,
+                LocalDate.of(2024, 1, 1));
+
+        HttpStatusCode status = getStatusOfUpdateOfEmployee(invalidUpdatedEmployee,
+                invalidUpdatedEmployee.id());
+        List<EmployeeDto> employeesAfter = getAllEmployees();
+
+        assertThat(status).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(employeesBefore.get(0)).isEqualTo(employeesAfter.get(0));
+    }
+
+
+    @AfterEach
+    public void clearEmployees(){
+        webTestClient.delete().uri("/api/employees/deleteAll").exchange().expectStatus().isOk();
     }
 
     private List<EmployeeDto> getAllEmployees() {
@@ -66,9 +106,29 @@ public class EmployeeControllerIT {
         return employees;
     }
 
+    private void createEmployee(EmployeeDto newEmployee) {
+        webTestClient.post().uri("/api/employees").bodyValue(newEmployee).exchange().expectStatus().isOk();
+    }
+
+    private void updateEmployee(EmployeeDto employeeToUpdate, long id) {
+        webTestClient.put()
+                .uri("/api/employees/{id}", id)
+                .bodyValue(employeeToUpdate).exchange().expectStatus().isOk();
+    }
+
+
     private HttpStatusCode getStatusOfCreationOfEmployee(EmployeeDto newEmployee) {
         return webTestClient.post()
                 .uri("/api/employees")
+                .bodyValue(newEmployee)
+                .exchange()
+                .returnResult(EmployeeDto.class)
+                .getStatus();
+    }
+
+    private HttpStatusCode getStatusOfUpdateOfEmployee(EmployeeDto newEmployee, long id) {
+        return webTestClient.put()
+                .uri("/api/employees/{id}", id)
                 .bodyValue(newEmployee)
                 .exchange()
                 .returnResult(EmployeeDto.class)

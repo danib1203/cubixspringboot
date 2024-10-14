@@ -1,10 +1,8 @@
 package hu.cubix.hr.service;
 
 
-import hu.cubix.hr.dto.EmployeeDto;
 import hu.cubix.hr.model.Company;
 import hu.cubix.hr.model.Employee;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

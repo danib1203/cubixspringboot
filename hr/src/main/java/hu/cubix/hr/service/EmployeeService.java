@@ -43,4 +43,8 @@ public abstract class EmployeeService implements EmployeePayRaiseService{
     public void delete(final long id) {
         employees.remove(id);
     }
+
+    public void deleteAll() {
+        employees.clear();
+    }
 }
