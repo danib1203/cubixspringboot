@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,22 @@ public class EmployeeController {
     @GetMapping
     public List<EmployeeDto> findAll() {
         return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findAll()));
+    }
+
+    @GetMapping("/byJob")
+    public List<EmployeeDto> findAllByJob(@RequestParam final String job) {
+        return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findByJob(job)));
+    }
+
+    @GetMapping("/byName")
+    public List<EmployeeDto> findAllByName(@RequestParam final String name) {
+        return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findByNamePrefix(name)));
+    }
+
+    @GetMapping("/byWorkingBetween")
+    public List<EmployeeDto> findAllByWorkingBetween(@RequestParam final LocalDate startDate,
+                                                     @RequestParam final LocalDate endDate) {
+        return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findByWorkingBetweenDates(startDate, endDate)));
     }
 
     @GetMapping("/{id}")

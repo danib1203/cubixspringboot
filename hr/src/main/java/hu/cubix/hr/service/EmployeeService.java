@@ -1,18 +1,21 @@
 package hu.cubix.hr.service;
 
 import hu.cubix.hr.model.Employee;
+import hu.cubix.hr.repository.EmployeeRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @Service
-public abstract class EmployeeService implements EmployeePayRaiseService{
+public abstract class EmployeeService implements EmployeePayRaiseService {
 
-    private Map<Long, Employee> employees = new HashMap<>();
+    @Autowired
+    EmployeeRepository employeeRepository;
 
+    @Transactional
     public Employee create(Employee employee) {
         if (findById(employee.getId()) != null) {
             return null;
@@ -20,6 +23,7 @@ public abstract class EmployeeService implements EmployeePayRaiseService{
         return save(employee);
     }
 
+    @Transactional
     public Employee update(Employee employee) {
         if (findById(employee.getId()) == null) {
             return null;
@@ -28,23 +32,35 @@ public abstract class EmployeeService implements EmployeePayRaiseService{
     }
 
     private Employee save(Employee employee) {
-        employees.put(employee.getId(), employee);
-        return employee;
+        return employeeRepository.save(employee);
     }
 
     public List<Employee> findAll() {
-        return new ArrayList<>(employees.values());
+        return employeeRepository.findAll();
     }
 
     public Employee findById(final long id) {
-        return employees.get(id);
+        return employeeRepository.findById(id).orElse(null);
     }
 
+    public List<Employee> findByJob(String job) {
+        return employeeRepository.findEmployeesByJobContainsIgnoreCase(job);
+    }
+
+    public List<Employee> findByNamePrefix(String namePrefix) {
+        return employeeRepository.findEmployeesByNameStartingWithIgnoreCase(namePrefix);
+    }
+
+    public List<Employee> findByWorkingBetweenDates(LocalDate startDate, LocalDate endDate) {
+        return employeeRepository.findEmployeesByWorkingSinceBetween(startDate, endDate);
+    }
+
+    @Transactional
     public void delete(final long id) {
-        employees.remove(id);
+        employeeRepository.deleteById(id);
     }
 
     public void deleteAll() {
-        employees.clear();
+        employeeRepository.deleteAll();
     }
 }

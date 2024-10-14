@@ -16,11 +16,18 @@ hr:
         10: 33
 spring:
   profiles:
-    active: smarta
+    active: smart
   thymeleaf:
     cache: false
   mvc:
     hiddenmethod:
       filter:
         enabled: true
-
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cubix-hr
+    username: postgres
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

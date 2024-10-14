@@ -15,11 +15,11 @@ public class EmployeeTLController {
     private List<Employee> employees = new ArrayList<>();
 
     {
-        employees.add(new Employee(1, "Istvan", "Boss", 310000, LocalDate.of(2014, 1, 23)));
-        employees.add(new Employee(2, "Bela", "Tester", 120000, LocalDate.of(2014, 9, 21)));
-        employees.add(new Employee(3, "Kata", "Dev", 150000, LocalDate.of(2014, 9, 11)));
-        employees.add(new Employee(4, "Jani", "Team Leader", 200000, LocalDate.of(2014, 1, 2)));
-        employees.add(new Employee(5, "Eva", "Architect", 240000, LocalDate.of(2014, 7, 18)));
+        employees.add(new Employee( "Istvan", "Boss", 310000, LocalDate.of(2014, 1, 23)));
+        employees.add(new Employee( "Bela", "Tester", 120000, LocalDate.of(2014, 9, 21)));
+        employees.add(new Employee( "Kata", "Dev", 150000, LocalDate.of(2014, 9, 11)));
+        employees.add(new Employee( "Jani", "Team Leader", 200000, LocalDate.of(2014, 1, 2)));
+        employees.add(new Employee( "Eva", "Architect", 240000, LocalDate.of(2014, 7, 18)));
     }
 
     @GetMapping("/")
