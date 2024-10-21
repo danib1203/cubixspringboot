@@ -1,14 +1,14 @@
 package hu.cubix.hr.dto;
 
 
-import hu.cubix.hr.model.Employee;
+import hu.cubix.hr.model.Form;
 
 import java.util.List;
 
-public record CompanyDto(long id, long registrationNumber, String name, String address,
-                         List<Employee> employees) {
+public record CompanyDto(Long id, long registrationNumber, String name, String address,
+                         List<EmployeeDto> employees, Form form) {
     public CompanyDto() {
-        this(0, 0, null, null, null);
+        this(0L, 0, null, null, null, null);
     }
 
 }

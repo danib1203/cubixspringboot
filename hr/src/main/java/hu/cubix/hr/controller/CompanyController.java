@@ -12,10 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/companies")
@@ -33,15 +31,25 @@ public class CompanyController {
     @GetMapping()
     public List<CompanyDto> getCompanies(@RequestParam Optional<Boolean> full) {
         List<Company> companies = companyService.findAll();
-        List<Company> companiesWithoutEmployees;
         if (!full.orElse(false)) {
-            companiesWithoutEmployees = companies.stream().map(c -> new Company(c.getId(),
-                    c.getRegistrationNumber(), c.getName(),
-                    c.getAddress())).collect(Collectors.toList());
-            return companyMapper.companiesToDtos(companiesWithoutEmployees);
+            return companies.stream().map(c -> companyMapper.companyToDtoWithoutEmployees(c)).toList();
         } else return companyMapper.companiesToDtos(companies);
-
     }
+
+    @GetMapping("/bySalary")
+    public List<CompanyDto> findByEmployeeSalaryGreaterThan(@RequestParam int salary) {
+        return companyMapper.companiesToDtos(companyService.findByEmployeeSalaryGreaterThan(salary));
+    }
+
+    @GetMapping("/byEmployeeNumber")
+    public List<CompanyDto> findCompaniesByEmployeesCountGreaterThan(@RequestParam int numberOfEmployees) {
+        return companyMapper.companiesToDtos(companyService.findCompaniesByEmployeesCountGreaterThan(numberOfEmployees));
+    }
+
+  // @GetMapping("/byId")
+  // public List<Object[]> findAverageSalariesByJobForCompany(@RequestParam int companyId) {
+  //     return companyService.findAverageSalariesByJobForCompany(companyId);
+  // }
 
     @GetMapping("/{id}")
     public CompanyDto getCompanyById(@PathVariable final long id,
@@ -51,10 +59,7 @@ public class CompanyController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found");
         }
         if (!full.orElse(false)) {
-            company = new Company(company.getId(),
-                    company.getRegistrationNumber(), company.getName(),
-                    company.getAddress());
-            return companyMapper.companyToDto(company);
+            return companyMapper.companyToDtoWithoutEmployees(company);
         } else return companyMapper.companyToDto(company);
     }
 

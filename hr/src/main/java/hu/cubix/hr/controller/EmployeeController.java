@@ -7,6 +7,8 @@ import hu.cubix.hr.service.EmployeePayRaiseService;
 import hu.cubix.hr.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,10 +35,6 @@ public class EmployeeController {
         return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findAll()));
     }
 
-    @GetMapping("/byJob")
-    public List<EmployeeDto> findAllByJob(@RequestParam final String job) {
-        return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findByJob(job)));
-    }
 
     @GetMapping("/byName")
     public List<EmployeeDto> findAllByName(@RequestParam final String name) {
@@ -44,9 +42,12 @@ public class EmployeeController {
     }
 
     @GetMapping("/byWorkingBetween")
-    public List<EmployeeDto> findAllByWorkingBetween(@RequestParam final LocalDate startDate,
-                                                     @RequestParam final LocalDate endDate) {
-        return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findByWorkingBetweenDates(startDate, endDate)));
+    public Page<EmployeeDto> findAllByWorkingBetween(@RequestParam final LocalDate startDate,
+                                                     @RequestParam final LocalDate endDate,
+                                                     @RequestParam int page,
+                                                     @RequestParam int size) {
+        PageRequest pr = PageRequest.of(page, size);
+        return employeeMapper.employeesToDtosPage(employeeService.findByWorkingBetweenDates(startDate,endDate, pr));
     }
 
     @GetMapping("/{id}")

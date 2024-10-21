@@ -1,6 +1,7 @@
 package hu.cubix.hr.controller;
 
 import hu.cubix.hr.model.Employee;
+import hu.cubix.hr.model.Position;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,14 +14,6 @@ import java.util.Map;
 public class EmployeeTLController {
 
     private List<Employee> employees = new ArrayList<>();
-
-    {
-        employees.add(new Employee( "Istvan", "Boss", 310000, LocalDate.of(2014, 1, 23)));
-        employees.add(new Employee( "Bela", "Tester", 120000, LocalDate.of(2014, 9, 21)));
-        employees.add(new Employee( "Kata", "Dev", 150000, LocalDate.of(2014, 9, 11)));
-        employees.add(new Employee( "Jani", "Team Leader", 200000, LocalDate.of(2014, 1, 2)));
-        employees.add(new Employee( "Eva", "Architect", 240000, LocalDate.of(2014, 7, 18)));
-    }
 
     @GetMapping("/")
     public String home(Map<String, Object> model) {

@@ -1,9 +1,12 @@
 package hu.cubix.hr.service;
 
+import hu.cubix.hr.dto.EmployeeDto;
 import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.repository.EmployeeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,16 +46,14 @@ public abstract class EmployeeService implements EmployeePayRaiseService {
         return employeeRepository.findById(id).orElse(null);
     }
 
-    public List<Employee> findByJob(String job) {
-        return employeeRepository.findEmployeesByJobContainsIgnoreCase(job);
-    }
 
     public List<Employee> findByNamePrefix(String namePrefix) {
         return employeeRepository.findEmployeesByNameStartingWithIgnoreCase(namePrefix);
     }
 
-    public List<Employee> findByWorkingBetweenDates(LocalDate startDate, LocalDate endDate) {
-        return employeeRepository.findEmployeesByWorkingSinceBetween(startDate, endDate);
+    public Page<Employee> findByWorkingBetweenDates(LocalDate startDate, LocalDate endDate,
+                                                       Pageable pageable) {
+        return employeeRepository.findEmployeesByWorkingSinceBetween(startDate, endDate, pageable);
     }
 
     @Transactional

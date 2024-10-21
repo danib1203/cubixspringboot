@@ -1,27 +1,34 @@
 package hu.cubix.hr.model;
 
-import hu.cubix.hr.dto.EmployeeDto;
+
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Company {
-    private long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private long registrationNumber;
     private String name;
     private String address;
-
-
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "form_id")
+    private Form form;
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Employee> employees = new ArrayList<>();
 
     public Company() {
     }
 
-    public Company(long id, long registrationNumber, String name, String address) {
-        this.id = id;
+    public Company(long registrationNumber, String name, String address, Form form) {
         this.registrationNumber = registrationNumber;
         this.name = name;
         this.address = address;
+        this.form = form;
     }
 
     public List<Employee> getEmployees() {
@@ -32,11 +39,11 @@ public class Company {
         this.employees = employees;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -63,4 +70,13 @@ public class Company {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public Form getForm() {
+        return form;
+    }
+
+    public void setForm(Form form) {
+        this.form = form;
+    }
 }
+

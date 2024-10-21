@@ -1,8 +1,6 @@
 package hu.cubix.hr.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -10,32 +8,44 @@ import java.time.LocalDate;
 public class Employee {
 
     @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
-    private String job;
+   // private String job;
     private int salary;
     private LocalDate workingSince;
+    @ManyToOne
+    @JoinColumn(name = "position_id")
+    private Position position;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
-    public Employee(String name, String job, int salary, LocalDate workingSince) {
+
+    public Employee(String name, int salary, LocalDate workingSince, Position position) {
         this.name = name;
-        this.job = job;
         this.salary = salary;
         this.workingSince = workingSince;
-    }
-
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", job='" + job + '\'' +
-                ", salary=" + salary +
-                ", workingSince=" + workingSince +
-                '}';
+        this.position = position;
     }
 
     public Employee() {
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public LocalDate getWorkingSince() {
@@ -62,14 +72,6 @@ public class Employee {
         this.id = id;
     }
 
-    public String getJob() {
-        return job;
-    }
-
-    public void setJob(String job) {
-        this.job = job;
-    }
-
     public int getSalary() {
         return salary;
     }
@@ -78,5 +80,15 @@ public class Employee {
         this.salary = salary;
     }
 
-
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", salary=" + salary +
+                ", workingSince=" + workingSince +
+                ", position=" + position +
+                ", company=" + company +
+                '}';
+    }
 }

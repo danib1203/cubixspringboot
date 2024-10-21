@@ -3,6 +3,8 @@ package hu.cubix.hr.mapper;
 import hu.cubix.hr.dto.CompanyDto;
 import hu.cubix.hr.model.Company;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -15,4 +17,9 @@ public interface CompanyMapper {
     Company dtoToCompany(CompanyDto companyDto);
 
     List<Company> dtosToCompanies(List<CompanyDto> companyDtos);
+
+    @Mapping(target = "employees", ignore = true)
+    @Named("WithoutEmployees")
+    CompanyDto companyToDtoWithoutEmployees(Company company);
+
 }
