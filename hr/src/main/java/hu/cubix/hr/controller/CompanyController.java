@@ -6,6 +6,7 @@ import hu.cubix.hr.mapper.CompanyMapper;
 import hu.cubix.hr.mapper.EmployeeMapper;
 import hu.cubix.hr.model.Company;
 import hu.cubix.hr.model.Employee;
+import hu.cubix.hr.repository.CompanyRepository;
 import hu.cubix.hr.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,12 +29,26 @@ public class CompanyController {
     @Autowired
     EmployeeMapper employeeMapper;
 
+    @Autowired
+    CompanyRepository companyRepository;
+
+//   @GetMapping()
+//   public List<CompanyDto> getCompanies(@RequestParam Optional<Boolean> full) {
+//       List<Company> companies = companyService.findAll();
+//       if (!full.orElse(false)) {
+//           return companies.stream().map(c -> companyMapper.companyToDtoWithoutEmployees(c))
+//           .toList();
+//       } else return companyMapper.companiesToDtos(companies);
+//   }
+
     @GetMapping()
     public List<CompanyDto> getCompanies(@RequestParam Optional<Boolean> full) {
-        List<Company> companies = companyService.findAll();
-        if (!full.orElse(false)) {
-            return companies.stream().map(c -> companyMapper.companyToDtoWithoutEmployees(c)).toList();
-        } else return companyMapper.companiesToDtos(companies);
+        List<Company> companies = full.orElse(false)
+                ? companyRepository.findAllWithEmployees()
+                : companyRepository.findAll();
+        return full.orElse(false)
+                ? companyMapper.companiesToDtos(companies)
+                : companyMapper.companiesToDtosWithoutEmployees(companies);
     }
 
     @GetMapping("/bySalary")
@@ -46,10 +61,10 @@ public class CompanyController {
         return companyMapper.companiesToDtos(companyService.findCompaniesByEmployeesCountGreaterThan(numberOfEmployees));
     }
 
-  // @GetMapping("/byId")
-  // public List<Object[]> findAverageSalariesByJobForCompany(@RequestParam int companyId) {
-  //     return companyService.findAverageSalariesByJobForCompany(companyId);
-  // }
+    @GetMapping("/byId")
+    public List<Object[]> findAverageSalariesByJobForCompany(@RequestParam int companyId) {
+        return companyService.findAverageSalariesByJobForCompany(companyId);
+    }
 
     @GetMapping("/{id}")
     public CompanyDto getCompanyById(@PathVariable final long id,

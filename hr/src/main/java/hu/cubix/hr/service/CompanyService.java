@@ -44,9 +44,9 @@ public class CompanyService {
         return companyRepository.findCompaniesByEmployeesCountGreaterThan(numberOfEmployees);
     }
 
- // public List<Object[]> findAverageSalariesByJobForCompany(int companyId) {
- //     return companyRepository.findAverageSalariesByJobForCompany(companyId);
- // }
+  public List<Object[]> findAverageSalariesByJobForCompany(int companyId) {
+      return companyRepository.findAverageSalariesByJobForCompany(companyId);
+  }
 
     private Company save(Company company) {
         return companyRepository.save(company);

@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,10 +45,8 @@ public class EmployeeController {
     @GetMapping("/byWorkingBetween")
     public Page<EmployeeDto> findAllByWorkingBetween(@RequestParam final LocalDate startDate,
                                                      @RequestParam final LocalDate endDate,
-                                                     @RequestParam int page,
-                                                     @RequestParam int size) {
-        PageRequest pr = PageRequest.of(page, size);
-        return employeeMapper.employeesToDtosPage(employeeService.findByWorkingBetweenDates(startDate,endDate, pr));
+                                                     Pageable pageable) {
+               return employeeMapper.employeesToDtosPage(employeeService.findByWorkingBetweenDates(startDate, endDate, pageable));
     }
 
     @GetMapping("/{id}")

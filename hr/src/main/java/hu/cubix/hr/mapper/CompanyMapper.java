@@ -2,6 +2,7 @@ package hu.cubix.hr.mapper;
 
 import hu.cubix.hr.dto.CompanyDto;
 import hu.cubix.hr.model.Company;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -17,6 +18,9 @@ public interface CompanyMapper {
     Company dtoToCompany(CompanyDto companyDto);
 
     List<Company> dtosToCompanies(List<CompanyDto> companyDtos);
+
+    @IterableMapping(qualifiedByName = "WithoutEmployees")
+    List<CompanyDto> companiesToDtosWithoutEmployees(List<Company> companies);
 
     @Mapping(target = "employees", ignore = true)
     @Named("WithoutEmployees")

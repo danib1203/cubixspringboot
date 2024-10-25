@@ -11,10 +11,9 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-   // private String job;
     private int salary;
     private LocalDate workingSince;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "position_id")
     private Position position;
     @ManyToOne

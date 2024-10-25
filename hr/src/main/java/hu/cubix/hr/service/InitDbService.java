@@ -1,6 +1,5 @@
 package hu.cubix.hr.service;
 
-import com.github.javafaker.DateAndTime;
 import com.github.javafaker.Faker;
 import hu.cubix.hr.model.Company;
 import hu.cubix.hr.model.Employee;
@@ -77,20 +76,21 @@ public class InitDbService {
         // create employee
         Faker faker = new Faker(new Locale("hu"));
 
-        List<Position> positions = IntStream.rangeClosed(1, 27)
+        List<Position> positions = IntStream.rangeClosed(1, 10)
                 .mapToObj(p -> new Position(faker.job().position(),
                         Arrays.stream(Qualification.values()).toList().get(random.nextInt(Qualification.values().length)),
                         faker.number().numberBetween(100000, 500000))).toList();
 
-        List<Employee> employees = IntStream.rangeClosed(1, 100)
+        List<Employee> employees = IntStream.rangeClosed(1, 30)
                 .mapToObj(e -> new Employee(
                         faker.name().firstName(),
                         faker.number().numberBetween(100000, 1000000),
-                        faker.date().between(Date.valueOf(LocalDate.of(2000,1,1)), Date.valueOf(LocalDate.now())) .toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-                      //  faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                        faker.date().between(Date.valueOf(LocalDate.of(2000, 1, 1)),
+                                Date.valueOf(LocalDate.now())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                        //  faker.date().birthday().toInstant().atZone(ZoneId.systemDefault())
+                        //  .toLocalDate(),
                         positions.get(random.nextInt(positions.size()))
                 )).toList();
-
 
         //assign employees to companies
         for (Employee employee : employees) {
