@@ -38,9 +38,9 @@ public interface CompanyMapper {
                 .map(employee -> new EmployeeDto(
                         employee.getId(),
                         employee.getName(),
+                        employee.getPosition(),
                         employee.getSalary(),
                         employee.getWorkingSince(),
-                        employee.getPosition(),
                         null
                 ))
                 .collect(Collectors.toList()) : Collections.emptyList();

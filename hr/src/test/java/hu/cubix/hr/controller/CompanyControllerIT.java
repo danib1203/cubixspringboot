@@ -36,7 +36,7 @@ public class CompanyControllerIT {
         List<EmployeeDto> employeesBefore = companiesBefore.get(0).employees();
 
         EmployeeDto testEmployee = new EmployeeDto(null, "David", null, 200000, LocalDate.of(2020
-                , 1, 1));
+                , 1, 1), null);
         addEmployee(testEmployee, companyId);
         List<CompanyDto> companiesAfter = getAllCompanies(true);
         List<EmployeeDto> employeesAfter = companiesAfter.get(0).employees();
@@ -60,7 +60,7 @@ public class CompanyControllerIT {
         List<CompanyDto> companiesBefore = getAllCompanies(true);
         long companyId = companiesBefore.get(companiesBefore.size() - 1).id();
         EmployeeDto testEmployee = new EmployeeDto(null, "David", null, 200000, LocalDate.of(2020
-                , 1, 1));
+                , 1, 1), null);
         addEmployee(testEmployee, companyId);
 
         List<CompanyDto> companiesAfterAdding = getAllCompanies(true);
@@ -87,15 +87,15 @@ public class CompanyControllerIT {
         long companyId =
                 companiesBeforeAddingEmployee.get(companiesBeforeAddingEmployee.size() - 1).id();
         EmployeeDto employeeDto = new EmployeeDto(null, "Bela", null, 120000, LocalDate.of(2020,
-                1, 1));
+                1, 1), null);
         addEmployee(employeeDto, companyId);
         List<CompanyDto> companiesBefore = getAllCompanies(true);
         List<EmployeeDto> employeesBefore =
                 companiesBefore.get(companiesBefore.size() - 1).employees();
 
         List<EmployeeDto> newEmployees = List.of(
-                new EmployeeDto(null, "Bob", null, 150000, LocalDate.of(2021, 3, 10)),
-                new EmployeeDto(null, "Charlie", null, 90000, LocalDate.of(2022, 7, 20))
+                new EmployeeDto(null, "Bob", null, 150000, LocalDate.of(2021, 3, 10),null),
+                new EmployeeDto(null, "Charlie", null, 90000, LocalDate.of(2022, 7, 20),null)
         );
         replaceEmployees(newEmployees, companyId);
         List<CompanyDto> companiesAfter = getAllCompanies(true);

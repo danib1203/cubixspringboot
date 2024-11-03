@@ -43,8 +43,10 @@ public abstract class EmployeeService implements EmployeePayRaiseService {
 
     @Transactional
     public List<Employee> findAll() {
-        return employeeRepository.findAllWithCompanyAndEmployees();
-
+       // return employeeRepository.findAllWithCompanyAndEmployees();
+            List<Employee> employees = employeeRepository.findAllWithCompanyAndEmployees();
+            System.out.println("Retrieved employees: " + employees);
+            return employees;
     }
 
     public Employee findById(final long id) {
@@ -63,7 +65,6 @@ public abstract class EmployeeService implements EmployeePayRaiseService {
 
     @Transactional
     public List<Employee> findEmployeesByExample(Employee employee) {
-
         long id = employee.getId();
         String namePrefix = employee.getName();
         String positionName = employee.getPosition().getName();

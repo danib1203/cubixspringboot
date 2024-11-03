@@ -30,8 +30,6 @@ public class EmployeeController {
     EmployeeService employeeService;
     @Autowired
     EmployeeMapper employeeMapper;
-    @Autowired
-    CompanyMapper companyMapper;
 
 
     @GetMapping

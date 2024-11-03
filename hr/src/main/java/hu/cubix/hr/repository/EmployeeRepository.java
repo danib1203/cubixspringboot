@@ -21,4 +21,6 @@ public interface EmployeeRepository extends PagingAndSortingRepository<Employee,
 
     @Query("SELECT e FROM Employee e JOIN FETCH e.company c LEFT JOIN FETCH c.employees")
     List<Employee> findAllWithCompanyAndEmployees();
+
+
 }

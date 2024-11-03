@@ -17,7 +17,8 @@ public class Employee {
     @ManyToOne
     private Company company;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "position_id")
     private Position position;
 
     public Employee() {

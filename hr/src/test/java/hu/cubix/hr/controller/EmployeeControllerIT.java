@@ -1,11 +1,16 @@
 package hu.cubix.hr.controller;
 
 import hu.cubix.hr.dto.EmployeeDto;
+import hu.cubix.hr.model.Company;
+import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.model.Position;
+import hu.cubix.hr.repository.CompanyRepository;
+import hu.cubix.hr.repository.EmployeeRepository;
 import hu.cubix.hr.repository.PositionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -18,13 +23,25 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class EmployeeControllerIT {
 
     @Autowired
     private WebTestClient webTestClient;
     @Autowired
     private PositionRepository positionRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
 
+
+    @Test
+    public void testFindAllWithCompanyAndEmployees() {
+        List<Employee> employees = employeeRepository.findAllWithCompanyAndEmployees();
+        assertThat(employees).isNotEmpty(); // Make sure there's data
+        System.out.println("Employees with companies: " + employees);
+    }
 
     //Test for POST methods
 
@@ -33,11 +50,10 @@ public class EmployeeControllerIT {
         Position position = new Position("Dev", Position.Qualification.NONE, 220000);
         List<EmployeeDto> employeesBefore = getAllEmployees();
         EmployeeDto employeeDto = new EmployeeDto(1L, "Jozsi", position, 100000,
-                LocalDate.of(2024, 1, 1));
+                LocalDate.of(2024, 1, 1), null);
 
         createEmployee(employeeDto, position);
         List<EmployeeDto> employeesAfter = getAllEmployees();
-        System.out.println("employees after: " + employeesAfter);
 
         assertThat(employeesAfter.subList(0, employeesBefore.size()))
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
@@ -51,7 +67,7 @@ public class EmployeeControllerIT {
     @Test
     void testEmployeeNotAddedWithInvalidInput() {
         List<EmployeeDto> employeesBefore = getAllEmployees();
-        EmployeeDto invalidEmployee = new EmployeeDto(1L, null, null, -1, null);
+        EmployeeDto invalidEmployee = new EmployeeDto(1L, null, null, -1, null, null);
 
         HttpStatusCode status = getStatusOfCreationOfEmployee(invalidEmployee);
         List<EmployeeDto> employeesAfter = getAllEmployees();
@@ -68,13 +84,14 @@ public class EmployeeControllerIT {
     void testThatEmployeeIsUpdatedWithValidInput() {
         Position position = new Position("Dev", Position.Qualification.NONE, 220000);
         EmployeeDto employeeDto = new EmployeeDto(1L, "Jozsi", position, 100000,
-                LocalDate.of(2024, 1, 1));
+                LocalDate.of(2024, 1, 1), null);
         createEmployee(employeeDto, position);
         List<EmployeeDto> employeesBefore = getAllEmployees();
+        System.out.println(employeesBefore);
         EmployeeDto savedEmployee = employeesBefore.get(employeesBefore.size() - 1);
         long id = savedEmployee.id();
         EmployeeDto updatedEmployee = new EmployeeDto(1L, "Jozsi", position, 200000,
-                LocalDate.of(2024, 1, 1));
+                LocalDate.of(2024, 1, 1), null);
 
         updateEmployee(updatedEmployee, id);
         List<EmployeeDto> employeesAfter = getAllEmployees();
@@ -88,12 +105,12 @@ public class EmployeeControllerIT {
     void testThatEmployeeIsNotUpdatedWithInvalidInput() {
         Position position = new Position("Dev", Position.Qualification.NONE, 220000);
         EmployeeDto employeeDto = new EmployeeDto(1L, "Jozsi", position, 100000,
-                LocalDate.of(2024, 1, 1));
+                LocalDate.of(2024, 1, 1), null);
         createEmployee(employeeDto, position);
         List<EmployeeDto> employeesBefore = getAllEmployees();
         EmployeeDto invalidUpdatedEmployee = new EmployeeDto(13L, "Jozsi", position,
                 100000,
-                LocalDate.of(2024, 1, 1));
+                LocalDate.of(2024, 1, 1), null);
 
         HttpStatusCode status = getStatusOfUpdateOfEmployee(invalidUpdatedEmployee,
                 invalidUpdatedEmployee.id());
@@ -105,23 +122,30 @@ public class EmployeeControllerIT {
                 .isEqualTo(employeesBefore.get(0));
     }
 
-
     @BeforeEach
     public void clearEmployees() {
         webTestClient.delete().uri("/api/employees/deleteAll").exchange().expectStatus().isOk();
     }
 
+
+    protected void createEmployee(EmployeeDto newEmployee, Position position) {
+        positionRepository.save(position);
+        webTestClient.post().uri("/api/employees")
+                .bodyValue(newEmployee)
+                .exchange()
+                .expectStatus().isOk();
+    }
+
     private List<EmployeeDto> getAllEmployees() {
-        List<EmployeeDto> employees =
-                webTestClient.get().uri("api/employees").exchange().expectStatus().isOk().expectBodyList(EmployeeDto.class).returnResult().getResponseBody();
+        List<EmployeeDto> employees = webTestClient.get().uri("/api/employees")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(EmployeeDto.class)
+                .returnResult()
+                .getResponseBody();
         assert employees != null;
         employees.sort(Comparator.comparing(EmployeeDto::id));
         return employees;
-    }
-
-    private void createEmployee(EmployeeDto newEmployee, Position position) {
-        positionRepository.save(position);
-        webTestClient.post().uri("/api/employees").bodyValue(newEmployee).exchange().expectStatus().isOk();
     }
 
     private void updateEmployee(EmployeeDto employeeToUpdate, long id) {
@@ -148,5 +172,4 @@ public class EmployeeControllerIT {
                 .returnResult(EmployeeDto.class)
                 .getStatus();
     }
-
 }

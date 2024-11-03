@@ -7,13 +7,12 @@ import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
 
-public record EmployeeDto(Long id, @NotEmpty String name,
+public record EmployeeDto(Long id, @NotEmpty String name,Position position,
                           @Positive int salary,
                           @Past LocalDate workingSince,
-                          Position position,
                           CompanyDto company
 ) {
     public EmployeeDto() {
-        this(0L, null, 1, null, null, null);
+        this(0L, null, null, 1, null, null);
     }
 }
