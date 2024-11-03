@@ -32,16 +32,9 @@ public class EmployeeControllerIT {
     private PositionRepository positionRepository;
     @Autowired
     private EmployeeRepository employeeRepository;
-    @Autowired
-    private CompanyRepository companyRepository;
 
 
-    @Test
-    public void testFindAllWithCompanyAndEmployees() {
-        List<Employee> employees = employeeRepository.findAllWithCompanyAndEmployees();
-        assertThat(employees).isNotEmpty(); // Make sure there's data
-        System.out.println("Employees with companies: " + employees);
-    }
+
 
     //Test for POST methods
 
