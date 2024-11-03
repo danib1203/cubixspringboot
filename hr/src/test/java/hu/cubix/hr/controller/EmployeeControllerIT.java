@@ -21,9 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EmployeeControllerIT {
 
     @Autowired
-    WebTestClient webTestClient;
+    private WebTestClient webTestClient;
     @Autowired
-    PositionRepository positionRepository;
+    private PositionRepository positionRepository;
+
 
     //Test for POST methods
 
@@ -31,10 +32,10 @@ public class EmployeeControllerIT {
     void testThatEmployeeIsCreatedWithValidInput() {
         Position position = new Position("Dev", Position.Qualification.NONE, 220000);
         List<EmployeeDto> employeesBefore = getAllEmployees();
-        EmployeeDto employeeDto = new EmployeeDto(1L, "Jozsi", 100000,
-                LocalDate.of(2024, 1, 1), position);
+        EmployeeDto employeeDto = new EmployeeDto(1L, "Jozsi", position, 100000,
+                LocalDate.of(2024, 1, 1));
 
-        createEmployee(employeeDto);
+        createEmployee(employeeDto, position);
         List<EmployeeDto> employeesAfter = getAllEmployees();
         System.out.println("employees after: " + employeesAfter);
 
@@ -50,7 +51,7 @@ public class EmployeeControllerIT {
     @Test
     void testEmployeeNotAddedWithInvalidInput() {
         List<EmployeeDto> employeesBefore = getAllEmployees();
-        EmployeeDto invalidEmployee = new EmployeeDto(1L, null, -1, null, null);
+        EmployeeDto invalidEmployee = new EmployeeDto(1L, null, null, -1, null);
 
         HttpStatusCode status = getStatusOfCreationOfEmployee(invalidEmployee);
         List<EmployeeDto> employeesAfter = getAllEmployees();
@@ -66,15 +67,16 @@ public class EmployeeControllerIT {
     @Test
     void testThatEmployeeIsUpdatedWithValidInput() {
         Position position = new Position("Dev", Position.Qualification.NONE, 220000);
-        EmployeeDto employeeDto = new EmployeeDto(1L, "Jozsi", 100000,
-                LocalDate.of(2024, 1, 1), position);
-        createEmployee(employeeDto);
+        EmployeeDto employeeDto = new EmployeeDto(1L, "Jozsi", position, 100000,
+                LocalDate.of(2024, 1, 1));
+        createEmployee(employeeDto, position);
         List<EmployeeDto> employeesBefore = getAllEmployees();
         EmployeeDto savedEmployee = employeesBefore.get(employeesBefore.size() - 1);
-        EmployeeDto updatedEmployee = new EmployeeDto(savedEmployee.id(), "Jozsi", 200000,
-                LocalDate.of(2014, 1, 1), position);
+        long id = savedEmployee.id();
+        EmployeeDto updatedEmployee = new EmployeeDto(1L, "Jozsi", position, 200000,
+                LocalDate.of(2024, 1, 1));
 
-        updateEmployee(updatedEmployee, updatedEmployee.id());
+        updateEmployee(updatedEmployee, id);
         List<EmployeeDto> employeesAfter = getAllEmployees();
 
         assertThat(employeesAfter.size()).isEqualTo(employeesBefore.size());
@@ -85,12 +87,13 @@ public class EmployeeControllerIT {
     @Test
     void testThatEmployeeIsNotUpdatedWithInvalidInput() {
         Position position = new Position("Dev", Position.Qualification.NONE, 220000);
-        EmployeeDto employeeDto = new EmployeeDto(1L, "Jozsi", 100000,
-                LocalDate.of(2024, 1, 1), position);
-        createEmployee(employeeDto);
+        EmployeeDto employeeDto = new EmployeeDto(1L, "Jozsi", position, 100000,
+                LocalDate.of(2024, 1, 1));
+        createEmployee(employeeDto, position);
         List<EmployeeDto> employeesBefore = getAllEmployees();
-        EmployeeDto invalidUpdatedEmployee = new EmployeeDto(22L, "Jozsi", 250000,
-                LocalDate.of(2024, 1, 1), position);
+        EmployeeDto invalidUpdatedEmployee = new EmployeeDto(13L, "Jozsi", position,
+                100000,
+                LocalDate.of(2024, 1, 1));
 
         HttpStatusCode status = getStatusOfUpdateOfEmployee(invalidUpdatedEmployee,
                 invalidUpdatedEmployee.id());
@@ -116,13 +119,12 @@ public class EmployeeControllerIT {
         return employees;
     }
 
-    private void createEmployee(EmployeeDto newEmployee) {
-        positionRepository.save(newEmployee.position());
+    private void createEmployee(EmployeeDto newEmployee, Position position) {
+        positionRepository.save(position);
         webTestClient.post().uri("/api/employees").bodyValue(newEmployee).exchange().expectStatus().isOk();
     }
 
     private void updateEmployee(EmployeeDto employeeToUpdate, long id) {
-        positionRepository.save(employeeToUpdate.position());
         webTestClient.put()
                 .uri("/api/employees/{id}", id)
                 .bodyValue(employeeToUpdate).exchange().expectStatus().isOk();

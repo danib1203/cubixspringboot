@@ -8,6 +8,7 @@ import hu.cubix.hr.model.Company;
 import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.repository.CompanyRepository;
 import hu.cubix.hr.service.CompanyService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -66,16 +67,20 @@ public class CompanyController {
         return companyService.findAverageSalariesByJobForCompany(companyId);
     }
 
+
     @GetMapping("/{id}")
     public CompanyDto getCompanyById(@PathVariable final long id,
                                      @RequestParam Optional<Boolean> full) {
-        Company company = companyService.findById(id);
-        if (company == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found");
+        Optional<Company> optionalCompany = full.orElse(false)
+                ? companyRepository.findByIdWithEmployees(id)
+                : Optional.ofNullable(companyService.findById(id));
+        if (optionalCompany.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        if (!full.orElse(false)) {
-            return companyMapper.companyToDtoWithoutEmployees(company);
-        } else return companyMapper.companyToDto(company);
+        Company company = optionalCompany.orElse(null);
+        return full.orElse(false)
+                ? companyMapper.companyToDto(company)
+                : companyMapper.companyToDtoWithoutEmployees(company);
     }
 
     @PostMapping
@@ -107,6 +112,7 @@ public class CompanyController {
     }
 
     @PostMapping("/addEmployee")
+    @Transactional
     public CompanyDto addEmployeeToCompany(@RequestBody EmployeeDto employeeDto,
                                            @RequestParam final Long companyId) {
         Employee employee = employeeMapper.dtoToEmployee(employeeDto);

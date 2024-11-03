@@ -2,6 +2,8 @@ package hu.cubix.hr.model;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 public class Position {
     @Id
@@ -52,6 +54,19 @@ public class Position {
 
     public void setMinSalary(int minSalary) {
         this.minSalary = minSalary;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position position = (Position) o;
+        return minSalary == position.minSalary && Objects.equals(id, position.id) && Objects.equals(name, position.name) && qualification == position.qualification;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public enum Qualification {NONE, HIGH_SCHOOL, COLLEGE, UNIVERSITY, PHD}

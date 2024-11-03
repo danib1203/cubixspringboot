@@ -65,7 +65,7 @@ public class CompanyService {
         companyRepository.deleteById(id);
     }
 
-
+    @Transactional
     public Company addEmployee(final long companyId, final Employee employee) {
         Company company = companyRepository.findById(companyId).orElse(null);
         if (company != null) {
@@ -77,7 +77,7 @@ public class CompanyService {
         return company;
     }
 
-
+    @Transactional
     public Company removeEmployee(final long companyId, final long employeeId) {
         Company company = companyRepository.findById(companyId).orElse(null);
         if (company != null) {
@@ -96,7 +96,7 @@ public class CompanyService {
         return company;
     }
 
-
+    @Transactional
     public Company replaceEmployees(final long companyId, final List<Employee> newEmployees) {
         Company company = companyRepository.findById(companyId).orElse(null);
 

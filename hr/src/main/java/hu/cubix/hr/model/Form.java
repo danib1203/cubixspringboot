@@ -7,21 +7,21 @@ public class Form {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String formName;
+    private String name;
 
     public Form() {
     }
 
     public Form(String formName) {
-        this.formName = formName;
+        this.name = formName;
     }
 
-    public String getFormName() {
-        return formName;
+    public String getName() {
+        return name;
     }
 
-    public void setFormName(String formName) {
-        this.formName = formName;
+    public void setName(String formName) {
+        this.name = formName;
     }
 
     public void setId(Long id) {
@@ -36,7 +36,7 @@ public class Form {
     public String toString() {
         return "Form{" +
                 "id=" + id +
-                ", formName='" + formName + '\'' +
+                ", formName='" + name + '\'' +
                 '}';
     }
 }

@@ -6,6 +6,19 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@NamedEntityGraph(
+        name = "Company.withFormAndEmployeesWithPosition",
+        attributeNodes = {
+                @NamedAttributeNode("form"),
+                @NamedAttributeNode(value = "employees", subgraph = "employees.position")
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "employees.position",
+                        attributeNodes = @NamedAttributeNode("position")
+                )
+        }
+)
 @Entity
 public class Company {
 
@@ -15,10 +28,12 @@ public class Company {
     private long registrationNumber;
     private String name;
     private String address;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "form_id")
     private Form form;
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Employee> employees = new ArrayList<>();
 
     public Company() {

@@ -8,18 +8,20 @@ import java.time.LocalDate;
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     private String name;
     private int salary;
     private LocalDate workingSince;
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "position_id")
-    private Position position;
+
     @ManyToOne
-    @JoinColumn(name = "company_id")
     private Company company;
 
+    @ManyToOne
+    private Position position;
+
+    public Employee() {
+    }
 
     public Employee(String name, int salary, LocalDate workingSince, Position position) {
         this.name = name;
@@ -28,7 +30,9 @@ public class Employee {
         this.position = position;
     }
 
-    public Employee() {
+    public Employee(int salary, LocalDate workingSince) {
+        this.salary = salary;
+        this.workingSince = workingSince;
     }
 
     public Position getPosition() {

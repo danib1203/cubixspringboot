@@ -46,10 +46,6 @@ public class InitDbService {
         employeeRepository.deleteAll();
         companyFormRepository.deleteAll();
         positionRepository.deleteAll();
-        entityManager.createNativeQuery("ALTER SEQUENCE company_id_seq RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER SEQUENCE employee_id_seq RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER SEQUENCE form_id_seq RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER SEQUENCE position_id_seq RESTART WITH 1").executeUpdate();
     }
 
     @Transactional

@@ -10,8 +10,10 @@ import java.time.LocalDate;
 public record EmployeeDto(Long id, @NotEmpty String name,
                           @Positive int salary,
                           @Past LocalDate workingSince,
-                          Position position) {
+                          Position position,
+                          CompanyDto company
+) {
     public EmployeeDto() {
-        this(0L, null,  1, null, null);
+        this(0L, null, 1, null, null, null);
     }
 }

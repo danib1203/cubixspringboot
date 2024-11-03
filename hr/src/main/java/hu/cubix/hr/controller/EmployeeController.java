@@ -1,6 +1,7 @@
 package hu.cubix.hr.controller;
 
 import hu.cubix.hr.dto.EmployeeDto;
+import hu.cubix.hr.mapper.CompanyMapper;
 import hu.cubix.hr.mapper.EmployeeMapper;
 import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.service.EmployeePayRaiseService;
@@ -29,6 +30,8 @@ public class EmployeeController {
     EmployeeService employeeService;
     @Autowired
     EmployeeMapper employeeMapper;
+    @Autowired
+    CompanyMapper companyMapper;
 
 
     @GetMapping
@@ -46,7 +49,7 @@ public class EmployeeController {
     public Page<EmployeeDto> findAllByWorkingBetween(@RequestParam final LocalDate startDate,
                                                      @RequestParam final LocalDate endDate,
                                                      Pageable pageable) {
-               return employeeMapper.employeesToDtosPage(employeeService.findByWorkingBetweenDates(startDate, endDate, pageable));
+        return employeeMapper.employeesToDtosPage(employeeService.findByWorkingBetweenDates(startDate, endDate, pageable));
     }
 
     @GetMapping("/{id}")
@@ -56,6 +59,13 @@ public class EmployeeController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found");
         }
         return employeeMapper.employeeToDto(employee);
+    }
+
+    @GetMapping("/byExample")
+    public List<EmployeeDto> findByExample(@RequestBody EmployeeDto employeeDto) {
+        Employee exampleEmployee = employeeMapper.dtoToEmployee(employeeDto);
+        List<Employee> foundEmployees = employeeService.findEmployeesByExample(exampleEmployee);
+        return employeeMapper.employeesToDtos(foundEmployees);
     }
 
     @PostMapping
