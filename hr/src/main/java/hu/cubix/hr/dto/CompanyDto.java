@@ -7,8 +7,5 @@ import java.util.List;
 
 public record CompanyDto(Long id, long registrationNumber, String name, String address,
                          List<EmployeeDto> employees, Form form) {
-    public CompanyDto() {
-        this(0L, 0, null, null, null, null);
-    }
 
 }

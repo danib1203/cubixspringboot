@@ -1,10 +1,7 @@
 package hu.cubix.hr.controller;
 
 import hu.cubix.hr.dto.EmployeeDto;
-import hu.cubix.hr.model.Company;
-import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.model.Position;
-import hu.cubix.hr.repository.CompanyRepository;
 import hu.cubix.hr.repository.EmployeeRepository;
 import hu.cubix.hr.repository.PositionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,10 +27,6 @@ public class EmployeeControllerIT {
     private WebTestClient webTestClient;
     @Autowired
     private PositionRepository positionRepository;
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-
 
 
     //Test for POST methods
@@ -80,7 +73,6 @@ public class EmployeeControllerIT {
                 LocalDate.of(2024, 1, 1), null);
         createEmployee(employeeDto, position);
         List<EmployeeDto> employeesBefore = getAllEmployees();
-        System.out.println(employeesBefore);
         EmployeeDto savedEmployee = employeesBefore.get(employeesBefore.size() - 1);
         long id = savedEmployee.id();
         EmployeeDto updatedEmployee = new EmployeeDto(1L, "Jozsi", position, 200000,

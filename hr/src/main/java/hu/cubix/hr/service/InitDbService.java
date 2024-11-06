@@ -1,14 +1,8 @@
 package hu.cubix.hr.service;
 
 import com.github.javafaker.Faker;
-import hu.cubix.hr.model.Company;
-import hu.cubix.hr.model.Employee;
-import hu.cubix.hr.model.Form;
-import hu.cubix.hr.model.Position;
-import hu.cubix.hr.repository.CompanyFormRepository;
-import hu.cubix.hr.repository.CompanyRepository;
-import hu.cubix.hr.repository.EmployeeRepository;
-import hu.cubix.hr.repository.PositionRepository;
+import hu.cubix.hr.model.*;
+import hu.cubix.hr.repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +11,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static hu.cubix.hr.model.Position.Qualification;
@@ -35,13 +26,15 @@ public class InitDbService {
     @Autowired
     CompanyFormRepository companyFormRepository;
     @Autowired
-    private EntityManager entityManager;
-    Random random = new Random();
+    PositionRepository positionRepository;
     @Autowired
-    private PositionRepository positionRepository;
+    TimeoffRepository timeoffRepository;
+    Random random = new Random();
+
 
     @Transactional
     public void clearDB() {
+        timeoffRepository.deleteAll();
         companyRepository.deleteAll();
         employeeRepository.deleteAll();
         companyFormRepository.deleteAll();
@@ -83,8 +76,6 @@ public class InitDbService {
                         faker.number().numberBetween(100000, 1000000),
                         faker.date().between(Date.valueOf(LocalDate.of(2000, 1, 1)),
                                 Date.valueOf(LocalDate.now())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-                        //  faker.date().birthday().toInstant().atZone(ZoneId.systemDefault())
-                        //  .toLocalDate(),
                         positions.get(random.nextInt(positions.size()))
                 )).toList();
 
@@ -109,9 +100,33 @@ public class InitDbService {
         employeeRepository.saveAll(employees);
         positionRepository.saveAll(positions);
 
+        List<Timeoff> timeoffs = new ArrayList<>();
+        while (timeoffs.size() < 50) {
+            LocalDate startDate = fakeTimeoffStartDateConverter();
+            timeoffs.add(new Timeoff(
+                    startDate,
+                    fakeTimeoffEndDateConverter(startDate),
+                    employees.get(random.nextInt(employees.size()))));
+        }
+        timeoffRepository.saveAll(timeoffs);
+
         // save companies again
         companyRepository.save(company1);
         companyRepository.save(company2);
         companyRepository.save(company3);
+    }
+
+    private LocalDate fakeTimeoffEndDateConverter(LocalDate startDate) {
+        Faker faker = new Faker(new Locale("hu"));
+        Date date = Date.valueOf(startDate);
+        return faker.date().between(date,
+                Date.valueOf(LocalDate.now())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+    }
+
+    private LocalDate fakeTimeoffStartDateConverter() {
+        Faker faker = new Faker(new Locale("hu"));
+        return faker.date().between(Date.valueOf(LocalDate.of(2024, 1, 1)),
+                Date.valueOf(LocalDate.now())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 }

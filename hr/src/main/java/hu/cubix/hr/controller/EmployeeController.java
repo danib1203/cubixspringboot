@@ -1,7 +1,6 @@
 package hu.cubix.hr.controller;
 
 import hu.cubix.hr.dto.EmployeeDto;
-import hu.cubix.hr.mapper.CompanyMapper;
 import hu.cubix.hr.mapper.EmployeeMapper;
 import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.service.EmployeePayRaiseService;
@@ -9,7 +8,6 @@ import hu.cubix.hr.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -37,19 +35,6 @@ public class EmployeeController {
         return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findAll()));
     }
 
-
-    @GetMapping("/byName")
-    public List<EmployeeDto> findAllByName(@RequestParam final String name) {
-        return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findByNamePrefix(name)));
-    }
-
-    @GetMapping("/byWorkingBetween")
-    public Page<EmployeeDto> findAllByWorkingBetween(@RequestParam final LocalDate startDate,
-                                                     @RequestParam final LocalDate endDate,
-                                                     Pageable pageable) {
-        return employeeMapper.employeesToDtosPage(employeeService.findByWorkingBetweenDates(startDate, endDate, pageable));
-    }
-
     @GetMapping("/{id}")
     public EmployeeDto getEmployeeById(@PathVariable long id) {
         Employee employee = employeeService.findById(id);
@@ -57,13 +42,6 @@ public class EmployeeController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found");
         }
         return employeeMapper.employeeToDto(employee);
-    }
-
-    @GetMapping("/byExample")
-    public List<EmployeeDto> findByExample(@RequestBody EmployeeDto employeeDto) {
-        Employee exampleEmployee = employeeMapper.dtoToEmployee(employeeDto);
-        List<Employee> foundEmployees = employeeService.findEmployeesByExample(exampleEmployee);
-        return employeeMapper.employeesToDtos(foundEmployees);
     }
 
     @PostMapping
@@ -106,6 +84,25 @@ public class EmployeeController {
                 employeesDto.stream().filter(employee -> employee.salary() > salary).collect(Collectors.toList());
 
         return employeesWithSalaryHigherThan;
+    }
+
+    @GetMapping("/byExample")
+    public List<EmployeeDto> findByExample(@RequestBody EmployeeDto employeeDto) {
+        Employee exampleEmployee = employeeMapper.dtoToEmployee(employeeDto);
+        List<Employee> foundEmployees = employeeService.findEmployeesByExample(exampleEmployee);
+        return employeeMapper.employeesToDtos(foundEmployees);
+    }
+
+    @GetMapping("/byName")
+    public List<EmployeeDto> findAllByName(@RequestParam final String name) {
+        return new ArrayList<>(employeeMapper.employeesToDtos(employeeService.findByNamePrefix(name)));
+    }
+
+    @GetMapping("/byWorkingBetween")
+    public Page<EmployeeDto> findAllByWorkingBetween(@RequestParam final LocalDate startDate,
+                                                     @RequestParam final LocalDate endDate,
+                                                     Pageable pageable) {
+        return employeeMapper.employeesToDtosPage(employeeService.findByWorkingBetweenDates(startDate, endDate, pageable));
     }
 
     @PostMapping("/getPayRaise")

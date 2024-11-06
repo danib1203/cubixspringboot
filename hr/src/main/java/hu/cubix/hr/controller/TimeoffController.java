@@ -1,0 +1,105 @@
+package hu.cubix.hr.controller;
+
+import hu.cubix.hr.dto.TimeoffDto;
+import hu.cubix.hr.mapper.TimeoffMapper;
+import hu.cubix.hr.model.Timeoff;
+import hu.cubix.hr.service.TimeoffService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/timeoff")
+public class TimeoffController {
+
+    @Autowired
+    TimeoffService timeoffService;
+
+    @Autowired
+    TimeoffMapper timeoffMapper;
+
+    @GetMapping
+    public List<TimeoffDto> getAllTimeoffs() {
+        List<Timeoff> timeoffs = timeoffService.findAll();
+        if (timeoffs.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No timeoffs found");
+        }
+        List<TimeoffDto> timeoffDtos = new ArrayList<>();
+        for (Timeoff timeoff : timeoffs) {
+            timeoffDtos.add(timeoffMapper.timeoffToDto(timeoff));
+        }
+        return timeoffDtos;
+    }
+
+    @GetMapping("/{id}")
+    public TimeoffDto getTimeoff(@PathVariable long id) {
+        Timeoff timeoff = timeoffService.findById(id);
+        if (timeoff == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Timeoff not found");
+        }
+        return timeoffMapper.timeoffToDto(timeoff);
+    }
+
+    @GetMapping("/pagesByExample")
+    public Page<TimeoffDto> findAllWithPagesAndExample(Pageable page,
+                                                       @RequestBody(required = false) Timeoff timeoff,
+                                                       @RequestParam(required = false) LocalDate timeoffStartDate,
+                                                       @RequestParam(required = false) LocalDate timeoffEndDate,
+                                                       @RequestParam(required = false) LocalDate creationStartDate,
+                                                       @RequestParam(required = false) LocalDate creationEndDate) {
+        if (timeoff == null) {
+            timeoff = new Timeoff();
+        }
+        Page<Timeoff> timeoffs = timeoffService.findTimeoffsByExample(timeoff, timeoffStartDate,
+                timeoffEndDate, creationStartDate, creationEndDate, page);
+        return timeoffMapper.timeoffsToDtosPage(timeoffs);
+    }
+
+    @PostMapping
+    public TimeoffDto createTimeoff(@RequestBody final TimeoffDto timeoffDto) {
+        Timeoff timeoff = timeoffMapper.dtoToTimeoff(timeoffDto);
+        Timeoff createdTimeoff = timeoffService.create(timeoff);
+        if (createdTimeoff == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return timeoffMapper.timeoffToDto(createdTimeoff);
+    }
+
+    @PutMapping("/{id}")
+    public TimeoffDto updateTimeoff(@PathVariable long id,
+                                    @RequestBody final TimeoffDto timeoffDto) {
+        timeoffDto.setId(id);
+        Timeoff timeoff = timeoffMapper.dtoToTimeoff(timeoffDto);
+        Timeoff updatedTimeoff = timeoffService.update(timeoff);
+        if (updatedTimeoff == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return timeoffMapper.timeoffToDto(updatedTimeoff);
+
+    }
+
+    @PutMapping("/decide")
+    public TimeoffDto approveTimeoff(@RequestParam long timeoffId, @RequestParam long employeeId,
+                                     @RequestParam boolean decision) {
+        Timeoff timeoff = timeoffService.decideTimeoff(decision, timeoffId, employeeId);
+        if (timeoff == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return timeoffMapper.timeoffToDto(timeoff);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteTimeoff(@PathVariable long id) {
+        timeoffService.delete(id);
+    }
+
+
+}

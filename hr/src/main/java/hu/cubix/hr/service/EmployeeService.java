@@ -43,10 +43,7 @@ public abstract class EmployeeService implements EmployeePayRaiseService {
 
     @Transactional
     public List<Employee> findAll() {
-       // return employeeRepository.findAllWithCompanyAndEmployees();
-            List<Employee> employees = employeeRepository.findAllWithCompanyAndEmployees();
-            System.out.println("Retrieved employees: " + employees);
-            return employees;
+        return  employeeRepository.findAll();
     }
 
     public Employee findById(final long id) {

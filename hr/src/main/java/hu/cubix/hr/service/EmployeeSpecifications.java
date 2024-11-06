@@ -5,7 +5,6 @@ import hu.cubix.hr.model.Employee_;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class EmployeeSpecifications {
 
