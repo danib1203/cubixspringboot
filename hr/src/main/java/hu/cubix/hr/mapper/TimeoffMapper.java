@@ -13,12 +13,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface TimeoffMapper {
 
-    @Mapping(target = "requestBy.company", ignore = true)
+    @Mapping(target = "requestBy.company.employees", ignore = true)
     @Mapping(target = "requestBy.position", ignore = true)
     @Mapping(target = "acceptedBy.company", ignore = true)
     @Mapping(target = "acceptedBy.position", ignore = true)
     TimeoffDto timeoffToDto(Timeoff timeoff);
-
 
     List<TimeoffDto> timeoffsToDtos(List<Timeoff> timeoffs);
 

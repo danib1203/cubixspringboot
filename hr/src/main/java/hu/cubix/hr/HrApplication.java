@@ -2,19 +2,14 @@ package hu.cubix.hr;
 
 import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.model.Position;
-import hu.cubix.hr.model.Timeoff;
-import hu.cubix.hr.service.CompanyService;
 import hu.cubix.hr.service.InitDbService;
 import hu.cubix.hr.service.SalaryService;
-import hu.cubix.hr.service.TimeoffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @SpringBootApplication
 public class HrApplication implements CommandLineRunner {
@@ -40,6 +35,7 @@ public class HrApplication implements CommandLineRunner {
 
         initDbService.clearDB();
         initDbService.insertTestData();
+
 
     }
 }

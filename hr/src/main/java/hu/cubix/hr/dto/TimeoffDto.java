@@ -1,10 +1,6 @@
 package hu.cubix.hr.dto;
 
-import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.model.Timeoff;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +18,9 @@ public class TimeoffDto {
     public TimeoffDto() {
     }
 
-    public TimeoffDto(Long id, LocalDate startDate, LocalDate endDate, EmployeeDto requestBy, LocalDateTime requestDate, Timeoff.AcceptStatus accepted, EmployeeDto acceptedBy) {
+    public TimeoffDto(Long id, LocalDate startDate, LocalDate endDate, EmployeeDto requestBy,
+                      LocalDateTime requestDate, Timeoff.AcceptStatus accepted,
+                      EmployeeDto acceptedBy) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;

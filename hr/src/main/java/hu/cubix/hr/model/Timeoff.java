@@ -1,6 +1,7 @@
 package hu.cubix.hr.model;
 
 import jakarta.persistence.*;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class Timeoff {
     private LocalDateTime requestDate;
 
     @Enumerated(EnumType.STRING)
-    private AcceptStatus accepted;
+    private AcceptStatus accepted = AcceptStatus.PENDING;
 
     @ManyToOne
     private Employee acceptedBy;
@@ -93,7 +94,7 @@ public class Timeoff {
         this.acceptedBy = acceptedBy;
     }
 
-    public enum AcceptStatus {ACCEPTED, DECLINED}
+    public enum AcceptStatus {ACCEPTED, DECLINED, PENDING}
 
     @Override
     public String toString() {

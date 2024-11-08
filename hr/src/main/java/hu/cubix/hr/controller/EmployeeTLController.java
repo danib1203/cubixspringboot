@@ -24,7 +24,7 @@ public class EmployeeTLController {
 
     @PostMapping("/employee")
     public String createEmployee(Employee employee) {
-        employee.setId(employees.size() + 1);
+        employee.setId(employees.size() + 1L);
         employees.add(employee);
         return "redirect:/";
     }

@@ -3,9 +3,9 @@ package hu.cubix.hr.service;
 import com.github.javafaker.Faker;
 import hu.cubix.hr.model.*;
 import hu.cubix.hr.repository.*;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -29,8 +29,17 @@ public class InitDbService {
     PositionRepository positionRepository;
     @Autowired
     TimeoffRepository timeoffRepository;
+    PasswordEncoder passwordEncoder;
+    Faker faker = new Faker(new Locale("hu"));
+
+
     Random random = new Random();
 
+    public InitDbService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder) {
+        super();
+        this.employeeRepository = employeeRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Transactional
     public void clearDB() {
@@ -62,8 +71,11 @@ public class InitDbService {
         companyRepository.save(company2);
         companyRepository.save(company3);
 
-        // create employee
-        Faker faker = new Faker(new Locale("hu"));
+        // create employees and manager
+
+        Employee manager = new Employee("manager", passwordEncoder.encode("pass"));
+        manager.setRoles(Set.of("manager"));
+        manager.setCompany(company1);
 
         List<Position> positions = IntStream.rangeClosed(1, 10)
                 .mapToObj(p -> new Position(faker.job().position(),
@@ -71,34 +83,40 @@ public class InitDbService {
                         faker.number().numberBetween(100000, 500000))).toList();
 
         List<Employee> employees = IntStream.rangeClosed(1, 30)
-                .mapToObj(e -> new Employee(
-                        faker.name().firstName(),
-                        faker.number().numberBetween(100000, 1000000),
-                        faker.date().between(Date.valueOf(LocalDate.of(2000, 1, 1)),
-                                Date.valueOf(LocalDate.now())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-                        positions.get(random.nextInt(positions.size()))
-                )).toList();
+                .mapToObj(e -> {
+                    Employee employee = new Employee(
+                            faker.name().firstName(),
+                            faker.number().numberBetween(100000, 1000000),
+                            faker.date().between(Date.valueOf(LocalDate.of(2000, 1, 1)),
+                                    Date.valueOf(LocalDate.now())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                            positions.get(random.nextInt(positions.size()))
+                    );
 
-        //assign employees to companies
-        for (Employee employee : employees) {
-            if (employee.getSalary() < employee.getPosition().getMinSalary()) {
-                employee.setSalary(employee.getPosition().getMinSalary());
-            }
-            int rnd = random.nextInt(1, 4);
-            switch (rnd) {
-                case 1:
-                    employee.setCompany(company1);
-                    break;
-                case 2:
-                    employee.setCompany(company2);
-                    break;
-                case 3:
-                    employee.setCompany(company3);
-                    break;
-            }
-        }
+                    if (employee.getSalary() < employee.getPosition().getMinSalary()) {
+                        employee.setSalary(employee.getPosition().getMinSalary());
+                    }
+                    employee.setManager(manager);
+                    employee.setUsername(employee.getName());
+                    employee.setPassword(passwordEncoder.encode("pass"));
+                    employee.setRoles(Set.of("employee"));
+
+                    // assign to a random company
+                    int rnd = random.nextInt(1, 4);
+                    switch (rnd) {
+                        case 1 -> employee.setCompany(company1);
+                        case 2 -> employee.setCompany(company2);
+                        case 3 -> employee.setCompany(company3);
+                    }
+
+                    return employee;
+                })
+                .toList();
+
+// save all employees and positions
+        employeeRepository.save(manager);
         employeeRepository.saveAll(employees);
         positionRepository.saveAll(positions);
+
 
         List<Timeoff> timeoffs = new ArrayList<>();
         while (timeoffs.size() < 50) {
@@ -117,7 +135,6 @@ public class InitDbService {
     }
 
     private LocalDate fakeTimeoffEndDateConverter(LocalDate startDate) {
-        Faker faker = new Faker(new Locale("hu"));
         Date date = Date.valueOf(startDate);
         return faker.date().between(date,
                 Date.valueOf(LocalDate.now())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -125,7 +142,6 @@ public class InitDbService {
     }
 
     private LocalDate fakeTimeoffStartDateConverter() {
-        Faker faker = new Faker(new Locale("hu"));
         return faker.date().between(Date.valueOf(LocalDate.of(2024, 1, 1)),
                 Date.valueOf(LocalDate.now())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }

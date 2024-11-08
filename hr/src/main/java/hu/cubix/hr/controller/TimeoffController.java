@@ -3,16 +3,18 @@ package hu.cubix.hr.controller;
 import hu.cubix.hr.dto.TimeoffDto;
 import hu.cubix.hr.mapper.TimeoffMapper;
 import hu.cubix.hr.model.Timeoff;
+import hu.cubix.hr.repository.TimeoffRepository;
+import hu.cubix.hr.security.EmployeeDetails;
 import hu.cubix.hr.service.TimeoffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,8 @@ public class TimeoffController {
 
     @Autowired
     TimeoffMapper timeoffMapper;
+    @Autowired
+    private TimeoffRepository timeoffRepository;
 
     @GetMapping
     public List<TimeoffDto> getAllTimeoffs() {
@@ -36,6 +40,9 @@ public class TimeoffController {
         for (Timeoff timeoff : timeoffs) {
             timeoffDtos.add(timeoffMapper.timeoffToDto(timeoff));
         }
+        EmployeeDetails employeeDetails =
+                (EmployeeDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("deteail:  " + employeeDetails);
         return timeoffDtos;
     }
 
@@ -63,10 +70,11 @@ public class TimeoffController {
         return timeoffMapper.timeoffsToDtosPage(timeoffs);
     }
 
-    @PostMapping
-    public TimeoffDto createTimeoff(@RequestBody final TimeoffDto timeoffDto) {
+    @PostMapping("/{employeeId}")
+    public TimeoffDto createTimeoff(@RequestBody final TimeoffDto timeoffDto,
+                                    @PathVariable long employeeId) {
         Timeoff timeoff = timeoffMapper.dtoToTimeoff(timeoffDto);
-        Timeoff createdTimeoff = timeoffService.create(timeoff);
+        Timeoff createdTimeoff = timeoffService.create(timeoff, employeeId);
         if (createdTimeoff == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -77,7 +85,9 @@ public class TimeoffController {
     public TimeoffDto updateTimeoff(@PathVariable long id,
                                     @RequestBody final TimeoffDto timeoffDto) {
         timeoffDto.setId(id);
+        // Timeoff.AcceptStatus acceptStatus = getTimeoff(id).getAccepted();
         Timeoff timeoff = timeoffMapper.dtoToTimeoff(timeoffDto);
+        // timeoff.setAccepted(acceptStatus);
         Timeoff updatedTimeoff = timeoffService.update(timeoff);
         if (updatedTimeoff == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

@@ -18,4 +18,5 @@ public interface EmployeeRepository extends PagingAndSortingRepository<Employee,
     Page<Employee> findEmployeesByWorkingSinceBetween(LocalDate startDate, LocalDate endDate,
                                                       Pageable pageable);
 
+    Employee findByUsername(String username);
 }
