@@ -6,24 +6,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public record EmployeeDetails(Employee employee) implements UserDetails {
-
-
-    public List<Map<String, Object>> managedEmployees(EmployeeUserDetailsService employeeUserDetailsService) {
-        return employeeUserDetailsService.managedEmployees(employee).stream()
-                .map(managedEmployee -> {
-                    Map<String, Object> employeeData = new HashMap<>();
-                    employeeData.put("id", managedEmployee.getId());
-                    employeeData.put("username", managedEmployee.getUsername());
-                    return employeeData;
-                })
-                .toList();
-    }
 
 
     @Override
