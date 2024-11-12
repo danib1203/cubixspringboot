@@ -5,10 +5,11 @@ import hu.cubix.hr.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class EmployeeUserDetailsService implements UserDetailsService {
@@ -17,7 +18,7 @@ public class EmployeeUserDetailsService implements UserDetailsService {
     EmployeeRepository employeeRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public EmployeeDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Employee employee = employeeRepository.findByUsername(username);
         if (employee == null) {
             throw new UsernameNotFoundException("User not found: " + username);
@@ -28,10 +29,17 @@ public class EmployeeUserDetailsService implements UserDetailsService {
     public Employee getAuthenticatedEmployee() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
+
         Employee employee = employeeRepository.findByUsername(username);
         if (employee == null) {
             throw new UsernameNotFoundException("User not found: " + username);
         }
+
         return employee;
+    }
+
+
+    public List<Employee> managedEmployees(Employee employee) {
+        return employeeRepository.findEmployeesByManager(employee);
     }
 }

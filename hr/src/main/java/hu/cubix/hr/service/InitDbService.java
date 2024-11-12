@@ -29,7 +29,9 @@ public class InitDbService {
     PositionRepository positionRepository;
     @Autowired
     TimeoffRepository timeoffRepository;
+
     PasswordEncoder passwordEncoder;
+
     Faker faker = new Faker(new Locale("hu"));
 
 
@@ -72,11 +74,14 @@ public class InitDbService {
         companyRepository.save(company3);
 
         // create employees and manager
+        Employee ceo = new Employee("ceo", passwordEncoder.encode("pass"));
+        ceo.setName("Elon");
 
         Employee manager = new Employee("manager", passwordEncoder.encode("pass"));
         manager.setRoles(Set.of("manager"));
         manager.setCompany(company1);
-
+        manager.setName(faker.name().fullName());
+        manager.setManager(ceo);
         List<Position> positions = IntStream.rangeClosed(1, 10)
                 .mapToObj(p -> new Position(faker.job().position(),
                         Arrays.stream(Qualification.values()).toList().get(random.nextInt(Qualification.values().length)),
@@ -112,7 +117,8 @@ public class InitDbService {
                 })
                 .toList();
 
-// save all employees and positions
+        // save all employees and positions
+        employeeRepository.save(ceo);
         employeeRepository.save(manager);
         employeeRepository.saveAll(employees);
         positionRepository.saveAll(positions);

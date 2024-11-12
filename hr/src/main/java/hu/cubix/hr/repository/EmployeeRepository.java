@@ -19,4 +19,6 @@ public interface EmployeeRepository extends PagingAndSortingRepository<Employee,
                                                       Pageable pageable);
 
     Employee findByUsername(String username);
+
+    List<Employee> findEmployeesByManager(Employee manager);
 }

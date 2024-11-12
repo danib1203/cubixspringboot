@@ -2,6 +2,7 @@ package hu.cubix.hr.mapper;
 
 import hu.cubix.hr.dto.EmployeeDto;
 import hu.cubix.hr.model.Employee;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
@@ -25,4 +26,6 @@ public interface EmployeeMapper {
         List<EmployeeDto> employeeDtos = employeesToDtos(employeesPage.getContent());
         return new PageImpl<>(employeeDtos, employeesPage.getPageable(), employeesPage.getTotalElements());
     }
+
+
 }

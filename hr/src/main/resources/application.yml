@@ -1,4 +1,8 @@
 hr:
+  jwt:
+    secret: mysecret
+    expiryInterval: 2
+    issuer: HrApp
   employee:
     smart:
       topLimit: 10.5
