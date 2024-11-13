@@ -17,7 +17,7 @@ public class Timeoff {
 
     private LocalDate endDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Employee requestBy;
 
     private LocalDateTime requestDate;

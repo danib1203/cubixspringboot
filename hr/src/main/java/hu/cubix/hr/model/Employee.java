@@ -3,7 +3,6 @@ package hu.cubix.hr.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity

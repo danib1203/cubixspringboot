@@ -33,16 +33,10 @@ public class TimeoffController {
     @GetMapping
     public List<TimeoffDto> getAllTimeoffs() {
         List<Timeoff> timeoffs = timeoffService.findAll();
-        if (timeoffs.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No timeoffs found");
-        }
         List<TimeoffDto> timeoffDtos = new ArrayList<>();
         for (Timeoff timeoff : timeoffs) {
             timeoffDtos.add(timeoffMapper.timeoffToDto(timeoff));
         }
-        EmployeeDetails employeeDetails =
-                (EmployeeDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("deteail:  " + employeeDetails);
         return timeoffDtos;
     }
 

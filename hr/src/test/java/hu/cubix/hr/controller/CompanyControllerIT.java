@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
+@Import(NoSecurityConfiguration.class)
 public class CompanyControllerIT {
 
     @Autowired
@@ -94,8 +96,8 @@ public class CompanyControllerIT {
                 companiesBefore.get(companiesBefore.size() - 1).employees();
 
         List<EmployeeDto> newEmployees = List.of(
-                new EmployeeDto(null, "Bob", null, 150000, LocalDate.of(2021, 3, 10),null),
-                new EmployeeDto(null, "Charlie", null, 90000, LocalDate.of(2022, 7, 20),null)
+                new EmployeeDto(null, "Bob", null, 150000, LocalDate.of(2021, 3, 10), null),
+                new EmployeeDto(null, "Charlie", null, 90000, LocalDate.of(2022, 7, 20), null)
         );
         replaceEmployees(newEmployees, companyId);
         List<CompanyDto> companiesAfter = getAllCompanies(true);

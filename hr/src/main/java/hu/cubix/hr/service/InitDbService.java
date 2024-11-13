@@ -29,13 +29,18 @@ public class InitDbService {
     PositionRepository positionRepository;
     @Autowired
     TimeoffRepository timeoffRepository;
-
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     Faker faker = new Faker(new Locale("hu"));
 
 
     Random random = new Random();
+
+    public InitDbService() {
+    }
+
+    ;
 
     public InitDbService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder) {
         super();

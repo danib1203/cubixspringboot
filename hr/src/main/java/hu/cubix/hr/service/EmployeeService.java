@@ -2,6 +2,7 @@ package hu.cubix.hr.service;
 
 import hu.cubix.hr.model.Employee;
 import hu.cubix.hr.repository.EmployeeRepository;
+import hu.cubix.hr.repository.TimeoffRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,8 +19,12 @@ import static hu.cubix.hr.service.EmployeeSpecifications.*;
 @Service
 public abstract class EmployeeService implements EmployeePayRaiseService {
 
+
     @Autowired
-    EmployeeRepository employeeRepository;
+    private TimeoffRepository timeoffRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Transactional
     public Employee create(Employee employee) {
@@ -96,10 +101,16 @@ public abstract class EmployeeService implements EmployeePayRaiseService {
 
     @Transactional
     public void delete(final long id) {
+        employeeRepository.clearManagerReferences(id);
+        timeoffRepository.deleteByRequestById(id);
         employeeRepository.deleteById(id);
     }
 
     public void deleteAll() {
+        timeoffRepository.deleteAll();
+
+        employeeRepository.clearAllManagerReferences();
+
         employeeRepository.deleteAll();
     }
 }
