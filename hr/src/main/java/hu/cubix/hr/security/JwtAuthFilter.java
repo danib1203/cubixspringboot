@@ -25,9 +25,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    FilterChain filterChain) throws ServletException,
+            IOException {
         String authHeader = request.getHeader(AUTHORIZATION);
-        if (authHeader != null && !authHeader.startsWith(BEARER)) {
+        if (authHeader != null && authHeader.startsWith(BEARER)) {
             String jwtToken = authHeader.substring(BEARER.length());
 
             UserDetails userDetails = jwtService.parseJwt(jwtToken);
@@ -39,4 +40,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
 }

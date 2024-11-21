@@ -6,13 +6,21 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+
 import java.util.stream.Collectors;
 
-public record EmployeeDetails(Employee employee) implements UserDetails {
+public class EmployeeDetails implements UserDetails {
+
+    private final Employee employee;
 
 
-    @Override
-    public Employee employee() {
+    public EmployeeDetails(Employee employee) {
+        this.employee = employee;
+    }
+
+
+
+    public Employee getEmployee() {
         return employee;
     }
 

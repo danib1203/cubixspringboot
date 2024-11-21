@@ -1,7 +1,11 @@
 package hu.cubix.hr.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 public class Form {
     @Id
@@ -14,22 +18,6 @@ public class Form {
 
     public Form(String formName) {
         this.name = formName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String formName) {
-        this.name = formName;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     @Override

@@ -2,10 +2,14 @@ package hu.cubix.hr.model;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
+@Getter
 @NamedEntityGraph(
         name = "Company.withFormAndEmployeesWithPosition",
         attributeNodes = {
@@ -46,52 +50,5 @@ public class Company {
         this.form = form;
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public long getRegistrationNumber() {
-        return registrationNumber;
-    }
-
-    public void setRegistrationNumber(long registrationNumber) {
-        this.registrationNumber = registrationNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Form getForm() {
-        return form;
-    }
-
-    public void setForm(Form form) {
-        this.form = form;
-    }
 }
 

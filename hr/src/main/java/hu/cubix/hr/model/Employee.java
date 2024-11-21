@@ -1,30 +1,45 @@
 package hu.cubix.hr.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
+
+@Getter
 @Entity
 public class Employee {
 
+    @Setter
     @Id
     @GeneratedValue
     private Long id;
+    @Setter
     private String name;
+    @Setter
     private int salary;
+    @Setter
     private LocalDate workingSince;
+    @Setter
     private String username;
+    @Setter
     private String password;
     @ManyToOne
     private Employee manager;
+    @Setter
     @ManyToOne
     private Company company;
 
+
+    @Setter
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "position_id")
     private Position position;
 
+    @Setter
     @ElementCollection(fetch = FetchType.EAGER)
     Set<String> roles;
 
@@ -52,66 +67,6 @@ public class Employee {
         this.password = password;
     }
 
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getSalary() {
-        return salary;
-    }
-
-    public void setSalary(int salary) {
-        this.salary = salary;
-    }
-
-    public LocalDate getWorkingSince() {
-        return workingSince;
-    }
-
-    public void setWorkingSince(LocalDate workingSince) {
-        this.workingSince = workingSince;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Employee getManager() {
-        return manager;
-    }
-
     public void setManager(Employee manager) {
         if (this != manager) {
             this.manager = manager;
@@ -121,21 +76,17 @@ public class Employee {
         }
     }
 
-
-    public Company getCompany() {
-        return company;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return Objects.equals(id, employee.id);
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
     @Override

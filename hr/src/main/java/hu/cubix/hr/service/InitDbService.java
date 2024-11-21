@@ -85,7 +85,13 @@ public class InitDbService {
         Employee manager = new Employee("manager", passwordEncoder.encode("pass"));
         manager.setRoles(Set.of("manager"));
         manager.setCompany(company1);
-        manager.setName(faker.name().fullName());
+        manager.setName("Manager");
+
+        Employee manager2 = new Employee("manager2", passwordEncoder.encode("pass"));
+        manager2.setRoles(Set.of("manager"));
+        manager2.setCompany(company1);
+        manager2.setName("Manager2");
+
         manager.setManager(ceo);
         List<Position> positions = IntStream.rangeClosed(1, 10)
                 .mapToObj(p -> new Position(faker.job().position(),
@@ -125,6 +131,7 @@ public class InitDbService {
         // save all employees and positions
         employeeRepository.save(ceo);
         employeeRepository.save(manager);
+        employeeRepository.save(manager2);
         employeeRepository.saveAll(employees);
         positionRepository.saveAll(positions);
 

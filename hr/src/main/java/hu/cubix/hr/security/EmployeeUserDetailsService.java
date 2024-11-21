@@ -28,16 +28,17 @@ public class EmployeeUserDetailsService implements UserDetailsService {
 
     public Employee getAuthenticatedEmployee() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        Employee employee = employeeRepository.findByUsername(username);
-        if (employee == null) {
-            throw new UsernameNotFoundException("User not found: " + username);
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new UsernameNotFoundException("No authenticated user found");
         }
+        Object principal = authentication.getPrincipal();
 
-        return employee;
+        if (principal instanceof EmployeeDetails employeeDetails) {
+            return employeeDetails.getEmployee();
+        } else {
+            throw new ClassCastException("Principal is not an instance of EmployeeDetails");
+        }
     }
-
 
     public List<Employee> managedEmployees(Employee employee) {
         return employeeRepository.findEmployeesByManager(employee);

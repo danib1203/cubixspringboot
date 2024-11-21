@@ -4,7 +4,6 @@ import hu.cubix.hr.dto.TimeoffDto;
 import hu.cubix.hr.model.Timeoff;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 

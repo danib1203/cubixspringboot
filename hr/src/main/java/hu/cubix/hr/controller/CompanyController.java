@@ -82,7 +82,7 @@ public class CompanyController {
                 ? companyMapper.companyToDto(company)
                 : companyMapper.companyToDtoWithoutEmployees(company);
     }
-
+    
     @PostMapping
     public CompanyDto createCompany(@RequestBody CompanyDto companyDto) {
         Company company = companyMapper.dtoToCompany(companyDto);

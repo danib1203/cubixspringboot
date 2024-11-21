@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 import static hu.cubix.hr.service.TimeoffSpecifications.*;
 
@@ -68,17 +69,24 @@ public class TimeoffService {
     }
 
     @Transactional
-    public Timeoff decideTimeoff(boolean accept, long timeoffId, long employeeId) {
+    public Timeoff decideTimeoff(boolean accept, long timeoffId) {
         Timeoff timeoff = findById(timeoffId);
-        Employee employee = employeeRepository.findById(employeeId).orElse(null);
-        if (timeoff == null || employee == null || !timeoff.getRequestBy().getCompany().equals(employee.getCompany())) {
+        if (timeoff == null) {
+            return null;
+        }
+        Employee employee =
+                employeeRepository.findById(timeoff.getRequestBy().getId()).orElse(null);
+        Employee currentEmployee = employeeUserDetailsService.getAuthenticatedEmployee();
+        boolean isCurrentEmployeeManagerOfTimeoffRequestEmployee =
+                (Objects.requireNonNull(employee).getManager()).equals(currentEmployee);
+        if (!isCurrentEmployeeManagerOfTimeoffRequestEmployee || !timeoff.getRequestBy().getCompany().equals(employee.getCompany())) {
             return null;
         }
 
         if (accept) {
             timeoff.setAccepted(Timeoff.AcceptStatus.ACCEPTED);
         } else timeoff.setAccepted(Timeoff.AcceptStatus.DECLINED);
-        timeoff.setAcceptedBy(employee);
+        timeoff.setAcceptedBy(currentEmployee);
         return save(timeoff);
     }
 
@@ -89,10 +97,6 @@ public class TimeoffService {
             timeoffRepository.delete(timeoff);
         }
 
-    }
-
-    public Page<Timeoff> findAllWithPageable(Pageable pageable) {
-        return timeoffRepository.findAll(pageable);
     }
 
     private boolean modifiable(Timeoff timeoff) {

@@ -17,8 +17,6 @@ public class JwtLoginController {
     @Autowired
     private AuthenticationManager authManager;
 
-    @Autowired
-    private EmployeeUserDetailsService employeeUserDetailsService;
 
     @Autowired
     private JwtService jwtService;
@@ -29,8 +27,7 @@ public class JwtLoginController {
         Authentication authentication =
                 authManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        Employee employee =
-                employeeUserDetailsService.loadUserByUsername(userDetails.getUsername()).employee();
+        Employee employee = ((EmployeeDetails) userDetails).getEmployee();
 
         return jwtService.createJwt(userDetails, employee);
     }

@@ -1,12 +1,16 @@
 package hu.cubix.hr.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Setter
+@Getter
 @Entity
 public class Timeoff {
     @Id
@@ -36,62 +40,6 @@ public class Timeoff {
         this.endDate = endDate;
         this.requestBy = requestBy;
         this.requestDate = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public Employee getRequestBy() {
-        return requestBy;
-    }
-
-    public void setRequestBy(Employee requestBy) {
-        this.requestBy = requestBy;
-    }
-
-    public LocalDateTime getRequestDate() {
-        return requestDate;
-    }
-
-    public void setRequestDate(LocalDateTime requestDate) {
-        this.requestDate = requestDate;
-    }
-
-    public AcceptStatus getAccepted() {
-        return accepted;
-    }
-
-    public void setAccepted(AcceptStatus accepted) {
-        this.accepted = accepted;
-    }
-
-    public Employee getAcceptedBy() {
-        return acceptedBy;
-    }
-
-    public void setAcceptedBy(Employee acceptedBy) {
-        this.acceptedBy = acceptedBy;
     }
 
     public enum AcceptStatus {ACCEPTED, DECLINED, PENDING}

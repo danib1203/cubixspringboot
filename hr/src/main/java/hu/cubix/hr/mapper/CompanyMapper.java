@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface CompanyMapper {
 
-    @Mapping(target = "employees", qualifiedByName = "mapEmployeesWithoutCompany")
+    @Mapping(target = "employees", source = "company.employees", qualifiedByName =
+            "mapEmployeesWithoutCompany")
     CompanyDto companyToDto(Company company);
 
     List<CompanyDto> companiesToDtos(List<Company> companies);

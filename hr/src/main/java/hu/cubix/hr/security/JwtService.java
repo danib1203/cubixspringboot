@@ -72,12 +72,11 @@ public class JwtService {
         DecodedJWT decodedJWT = JWT.require(algorithm)
                 .withIssuer(configProperties.getIssuer()).build().verify(jwtToken);
 
-
         String username = decodedJWT.getSubject();
         List<SimpleGrantedAuthority> authorities = decodedJWT.getClaim("auth")
                 .asList(String.class).stream().map(SimpleGrantedAuthority::new).toList();
 
-        return new User(username, "dummy", authorities);
+        return new EmployeeDetails(employeeUserDetailsService.loadUserByUsername(username).getEmployee());
     }
 
 

@@ -50,12 +50,9 @@ public class TimeoffController {
     }
 
     @GetMapping("/pagesByExample")
-    public Page<TimeoffDto> findAllWithPagesAndExample(Pageable page,
-                                                       @RequestBody(required = false) Timeoff timeoff,
-                                                       @RequestParam(required = false) LocalDate timeoffStartDate,
-                                                       @RequestParam(required = false) LocalDate timeoffEndDate,
-                                                       @RequestParam(required = false) LocalDate creationStartDate,
-                                                       @RequestParam(required = false) LocalDate creationEndDate) {
+    public Page<TimeoffDto> findAllWithPagesAndExample(Pageable page, @RequestBody(required =
+            false) Timeoff timeoff, @RequestParam(required = false) LocalDate timeoffStartDate,
+                                                       @RequestParam(required = false) LocalDate timeoffEndDate, @RequestParam(required = false) LocalDate creationStartDate, @RequestParam(required = false) LocalDate creationEndDate) {
         if (timeoff == null) {
             timeoff = new Timeoff();
         }
@@ -91,9 +88,8 @@ public class TimeoffController {
     }
 
     @PutMapping("/decide")
-    public TimeoffDto approveTimeoff(@RequestParam long timeoffId, @RequestParam long employeeId,
-                                     @RequestParam boolean decision) {
-        Timeoff timeoff = timeoffService.decideTimeoff(decision, timeoffId, employeeId);
+    public TimeoffDto approveTimeoff(@RequestParam long timeoffId, @RequestParam boolean decision) {
+        Timeoff timeoff = timeoffService.decideTimeoff(decision, timeoffId);
         if (timeoff == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

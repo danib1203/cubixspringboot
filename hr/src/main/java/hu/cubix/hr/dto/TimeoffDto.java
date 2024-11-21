@@ -1,10 +1,14 @@
 package hu.cubix.hr.dto;
 
 import hu.cubix.hr.model.Timeoff;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
 public class TimeoffDto {
 
     private Long id;
@@ -27,62 +31,6 @@ public class TimeoffDto {
         this.requestBy = requestBy;
         this.requestDate = requestDate;
         this.accepted = accepted;
-        this.acceptedBy = acceptedBy;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public EmployeeDto getRequestBy() {
-        return requestBy;
-    }
-
-    public void setRequestBy(EmployeeDto requestBy) {
-        this.requestBy = requestBy;
-    }
-
-    public LocalDateTime getRequestDate() {
-        return requestDate;
-    }
-
-    public void setRequestDate(LocalDateTime requestDate) {
-        this.requestDate = requestDate;
-    }
-
-    public Timeoff.AcceptStatus getAccepted() {
-        return accepted;
-    }
-
-    public void setAccepted(Timeoff.AcceptStatus accepted) {
-        this.accepted = accepted;
-    }
-
-    public EmployeeDto getAcceptedBy() {
-        return acceptedBy;
-    }
-
-    public void setAcceptedBy(EmployeeDto acceptedBy) {
         this.acceptedBy = acceptedBy;
     }
 
